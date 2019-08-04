@@ -14,6 +14,7 @@
 #include "glm/glm.hpp"
 #include "Logging.h"
 #include "WindowParams.h"
+#include "MassSpringObject.h"
 
 
 /// @file NGLScene.h
@@ -26,6 +27,7 @@
 /// Modified Verison 24/01/19 for use with ASE assignment.
 /// Modified Verison 29/01/19 for continuation of code after ASE assignment.
 /// Extracted Verison 19/03/19 from ASE assignment to use as template NGL project.
+/// Modified Version 03/08/19 for the Master's Project.
 class NGLScene : public QOpenGLWidget
 {
   ///Required for Qt Signals/slots
@@ -96,6 +98,8 @@ private:
   std::unique_ptr<ngl::AbstractVAO> m_vao;
   ///Boolean for if the project is running
   bool m_projectRunning;
+  ///The mass spring object
+  MassSpringObject m_massSpringObj;
 
 protected:
   /**
@@ -139,6 +143,16 @@ private:
   @param _event The Qt Event structure.
   */
   void wheelEvent(QWheelEvent* _event) override;
+
+  /**
+  @brief A function to build the point grid VAO for the mass spring mesh.
+  */
+  void buildGridVAO();
+
+  /**
+  @brief A funciton to set the data to be used by the VAO.
+  */
+  void setVAOData();
 
   /**
   @brief A function to build the VAO.

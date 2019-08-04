@@ -8,6 +8,7 @@
 /// @date 19/03/19
 /// Revision History:
 /// Initial Version 19/03/19.
+/// Modified Version 03/08/19 for the Master's Project.
 
 ///The definition for gravity
 #define GRAVITY (-9.81f)

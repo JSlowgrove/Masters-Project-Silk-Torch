@@ -15,5 +15,5 @@ MainWindow::MainWindow(QWidget *parent) :QMainWindow(parent), m_ui(new Ui::MainW
 
 MainWindow::~MainWindow()
 {
-    delete m_ui;
+  delete m_ui;
 }

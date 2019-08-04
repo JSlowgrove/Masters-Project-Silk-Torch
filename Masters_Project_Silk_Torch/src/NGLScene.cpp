@@ -23,6 +23,9 @@ NGLScene::NGLScene( QWidget *_parent ) : QOpenGLWidget( _parent ), m_projectRunn
 
   //set the number of milliseconds the frame timer should run at
   m_timerMilliseconds = 10;
+
+  //initalise the MassSpringObject
+  m_massSpringObj = MassSpringObject();
 }
 
 NGLScene::~NGLScene()
@@ -87,15 +90,31 @@ void NGLScene::resizeGL( int _w, int _h )
   m_win.height = static_cast<int>( _h * devicePixelRatio() );
 }
 
+void NGLScene::buildGridVAO()
+{
+  glm::vec3 colour = glm::vec3(1.0f,0.5f,0.0f);
+  for (int i = 0; i < int(m_massSpringObj.getVertices().size()); ++i)
+  {
+    m_vertAndColour.push_back(m_massSpringObj.getVertices()[ulong(i)]);
+    m_vertAndColour.push_back(colour);
+  }
+  for (auto index : m_massSpringObj.getIndices())
+  {
+    m_indices.push_back(GLshort(index));
+  }
+}
 
 void NGLScene::buildVAO()
 {
+  // build the particle grid VAO
+  buildGridVAO();
+
   // create a vao as a series of GL_TRIANGLES
   m_vao=ngl::VAOFactory::createVAO(ngl::simpleIndexVAO,GL_TRIANGLES);
   m_vao->bind();
 
   //set the vao data
-  //TODO
+  setVAOData();
 
  // now unbind
   m_vao->unbind();
@@ -138,7 +157,13 @@ void NGLScene::paintGL()
   shader->setUniform("MVP",MVP);
 
   //draw objects
-  //TODO
+  m_vao=ngl::VAOFactory::createVAO(ngl::simpleIndexVAO,GL_TRIANGLES);
+  m_vao->bind();
+
+  setVAOData();
+
+  m_vao->draw();
+  m_vao->unbind();
 }
 
 void NGLScene::toggleWireframe(bool _mode	 )
@@ -163,31 +188,53 @@ void NGLScene::restartProject()
 
 void NGLScene::timerEvent(QTimerEvent *_event)
 {
-    //calculate the dt from the frame timer
-    float dt = 1.0f / (m_timerMilliseconds * 1000.0f);
+  //calculate the dt from the frame timer
+  float dt = 1.0f / (m_timerMilliseconds * 1000.0f);
 
-    //timer event code
-    // TODO
+  //update the cloth
+  m_massSpringObj.update(dt);
 
-    // Update and redraw
-    update();
+  //recreate the vertex and colour data using the updated cloth
+  m_vertAndColour.resize(0);
+  for (int i = 0; i < int(m_massSpringObj.getVertices().size()); ++i)
+  {
+    m_vertAndColour.push_back(m_massSpringObj.getVertices()[ulong(i)]);
+    m_vertAndColour.push_back(glm::vec3(1.0f,1.0f,1.0f));
+  }
+
+  // Update and redraw
+  update();
+}
+
+void NGLScene::setVAOData()
+{
+  //set the data for the vao
+  m_vao->setData(ngl::SimpleIndexVAO::VertexData(m_vertAndColour.size() * sizeof(glm::vec3),
+                                                 m_vertAndColour[0].x,
+                                                 uint(m_indices.size()),
+                                                 &m_indices[0],
+                                                 GL_UNSIGNED_SHORT));
+  // data is 24 bytes apart ( two Vec3's) first index
+  // is 0 second is 3 floats into the data set (i.e. vec3 offset)
+  m_vao->setVertexAttributePointer(0,3,GL_FLOAT,sizeof(glm::vec3) * 2,0);
+  m_vao->setVertexAttributePointer(1,3,GL_FLOAT,sizeof(glm::vec3) * 2,3);
+  m_vao->setNumIndices(m_indices.size());
 }
 
 void NGLScene::drawLines(std::vector<glm::vec3> & _lineVertAndColour, std::vector<GLshort> & _lineIndices)
 {
-    m_vao=ngl::VAOFactory::createVAO(ngl::simpleIndexVAO,GL_LINES);
+  m_vao=ngl::VAOFactory::createVAO(ngl::simpleIndexVAO,GL_LINES);
 
-    m_vao->bind();
-    m_vao->setData(ngl::SimpleIndexVAO::VertexData(
-                                                    _lineVertAndColour.size() * sizeof(glm::vec3),
-                                                    _lineVertAndColour[0].x,
-                                                    uint(_lineIndices.size()),
-                                                    &_lineIndices[0],
-                                                    GL_UNSIGNED_SHORT));
-    m_vao->setVertexAttributePointer(0,3,GL_FLOAT,sizeof(glm::vec3) * 2,0);
-    m_vao->setVertexAttributePointer(1,3,GL_FLOAT,sizeof(glm::vec3) * 2,3);
-    m_vao->setNumIndices(_lineVertAndColour.size());
+  m_vao->bind();
+  m_vao->setData(ngl::SimpleIndexVAO::VertexData(_lineVertAndColour.size() * sizeof(glm::vec3),
+                                                 _lineVertAndColour[0].x,
+                                                 uint(_lineIndices.size()),
+                                                 &_lineIndices[0],
+                                                 GL_UNSIGNED_SHORT));
+  m_vao->setVertexAttributePointer(0,3,GL_FLOAT,sizeof(glm::vec3) * 2,0);
+  m_vao->setVertexAttributePointer(1,3,GL_FLOAT,sizeof(glm::vec3) * 2,3);
+  m_vao->setNumIndices(_lineVertAndColour.size());
 
-    m_vao->draw();
-    m_vao->unbind();
+  m_vao->draw();
+  m_vao->unbind();
 }

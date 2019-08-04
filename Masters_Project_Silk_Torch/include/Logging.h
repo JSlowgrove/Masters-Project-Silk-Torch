@@ -13,6 +13,7 @@
 /// Initial Version 24/01/19.
 /// Modified Verison 29/01/19 for continuation of code after ASE assignment.
 /// Extracted Verison 19/03/19 from ASE assignment to use as template NGL project.
+/// Modified Version 03/08/19 for the Master's Project.
 namespace Logging
 {
 	/**
