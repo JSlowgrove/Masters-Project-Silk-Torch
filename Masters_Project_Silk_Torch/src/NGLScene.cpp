@@ -6,6 +6,9 @@
 #include <ngl/ShaderLib.h>
 #include <QColorDialog>
 #include <ngl/SimpleIndexVAO.h>
+//#include <random>
+
+#include "CustomDefs.h"
 
 NGLScene::NGLScene( QWidget *_parent ) : QOpenGLWidget( _parent ), m_projectRunning(false)
 {
@@ -25,7 +28,8 @@ NGLScene::NGLScene( QWidget *_parent ) : QOpenGLWidget( _parent ), m_projectRunn
   m_timerMilliseconds = 10;
 
   //initalise the MassSpringObject
-  m_massSpringObj = MassSpringObject();
+  m_gridSize = 3;
+  m_massSpringObj = MassSpringObject(m_gridSize);
 }
 
 NGLScene::~NGLScene()
@@ -92,11 +96,17 @@ void NGLScene::resizeGL( int _w, int _h )
 
 void NGLScene::buildGridVAO()
 {
+  //std::random_device rd;
+  //std::mt19937 gen(rd());
+  //std::uniform_real_distribution<float> dis(-1.0f,1.0f);
+
+  //glm::vec3 colour = glm::vec3(dis(gen),dis(gen),dis(gen));
   glm::vec3 colour = glm::vec3(1.0f,0.5f,0.0f);
   for (int i = 0; i < int(m_massSpringObj.getVertices().size()); ++i)
   {
     m_vertAndColour.push_back(m_massSpringObj.getVertices()[ulong(i)]);
     m_vertAndColour.push_back(colour);
+    //colour = glm::vec3(dis(gen),dis(gen),dis(gen));
   }
   for (auto index : m_massSpringObj.getIndices())
   {
@@ -199,7 +209,8 @@ void NGLScene::timerEvent(QTimerEvent *_event)
   for (int i = 0; i < int(m_massSpringObj.getVertices().size()); ++i)
   {
     m_vertAndColour.push_back(m_massSpringObj.getVertices()[ulong(i)]);
-    m_vertAndColour.push_back(glm::vec3(1.0f,1.0f,1.0f));
+    //m_vertAndColour.push_back(glm::vec3(0.0f,1.0f,1.0f));
+    m_vertAndColour.push_back(m_massSpringObj.getMassPoint(U_INT(i))->getColour());
   }
 
   // Update and redraw

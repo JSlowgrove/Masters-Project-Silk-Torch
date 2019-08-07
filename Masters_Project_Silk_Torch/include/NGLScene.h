@@ -100,6 +100,8 @@ private:
   bool m_projectRunning;
   ///The mass spring object
   MassSpringObject m_massSpringObj;
+  ///The size of the massSpringObj grid
+  unsigned int m_gridSize;
 
 protected:
   /**
