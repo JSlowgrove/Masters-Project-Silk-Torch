@@ -10,7 +10,7 @@
 
 #include "CustomDefs.h"
 
-NGLScene::NGLScene( QWidget *_parent ) : QOpenGLWidget( _parent ), m_projectRunning(false), m_gridSize(3),
+NGLScene::NGLScene( QWidget *_parent ) : QOpenGLWidget( _parent ), m_projectRunning(false), m_gridSize(10),
   m_massSpringObj(MassSpringObject(m_gridSize))
 {
 

@@ -106,16 +106,16 @@ void MassPoint::calculateInternalForces()
       {
       case 'A':
           //if it is point a on the spring the the spring force is - and the damping force is +
-          m_internalForces.x += -spring.m_springForce->x + dampingForce.x;
+          //m_internalForces.x += -spring.m_springForce->x + dampingForce.x;
           m_internalForces.y += -spring.m_springForce->y + dampingForce.y;
-          m_internalForces.z += -spring.m_springForce->z + dampingForce.z;
+          //m_internalForces.z += -spring.m_springForce->z + dampingForce.z;
         break;
 
       case 'B':
           //if it is point a on the spring the the spring force is + and the damping force is -
-          m_internalForces.x += spring.m_springForce->x - dampingForce.x;
+          //m_internalForces.x += spring.m_springForce->x - dampingForce.x;
           m_internalForces.y += spring.m_springForce->y - dampingForce.y;
-          m_internalForces.z += spring.m_springForce->z - dampingForce.z;
+          //m_internalForces.z += spring.m_springForce->z - dampingForce.z;
         break;
       }
     break;
@@ -125,16 +125,16 @@ void MassPoint::calculateInternalForces()
       {
       case 'A':
           //if it is point a on the spring the the spring force is - and the damping force is +
-          m_internalForces.x += -spring.m_springForce->x + dampingForce.x;
-          m_internalForces.y += -spring.m_springForce->y + dampingForce.y;
-          m_internalForces.z += -spring.m_springForce->z + dampingForce.z;
+          //m_internalForces.x += -spring.m_springForce->x + dampingForce.x;
+          //m_internalForces.y += -spring.m_springForce->y + dampingForce.y;
+          //m_internalForces.z += -spring.m_springForce->z + dampingForce.z;
         break;
 
       case 'B':
           //if it is point a on the spring the the spring force is + and the damping force is -
-          m_internalForces.x += spring.m_springForce->x - dampingForce.x;
-          m_internalForces.y += spring.m_springForce->y - dampingForce.y;
-          m_internalForces.z += spring.m_springForce->z - dampingForce.z;
+          //m_internalForces.x += spring.m_springForce->x - dampingForce.x;
+          //m_internalForces.y += spring.m_springForce->y - dampingForce.y;
+          //m_internalForces.z += spring.m_springForce->z - dampingForce.z;
         break;
       }
      break;
