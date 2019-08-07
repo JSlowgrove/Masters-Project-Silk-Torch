@@ -2,6 +2,9 @@
 #define MASSPOINT_H_
 
 #include "glm/glm.hpp"
+#include <vector>
+#include <algorithm>
+#include <memory>
 
 /// @file MassPoint.h
 /// @brief A Class that contains all the functions and members for the point of mass.
@@ -75,7 +78,7 @@ public:
   void setVel(glm::vec3 _vel);
 
   /**
-  @brief Gets the velocity of the MassPoint.
+  @brief Gets the velocityaddSpringID of the MassPoint.
   @returns The velocity of the MassPoint.
   */
   glm::vec3 getVel();
@@ -99,10 +102,9 @@ public:
   glm::vec3 getInternalForces();
 
   /**
-  @brief Updates the internal forces of the MassPoint.
-  @param[in] _vel The internal forces to update the current internal forces with.
+  @brief Calculates the internal forces of the MassPoint.
   */
-  void updateInternalForces(glm::vec3 _internalForces);
+  void calculateInternalForces();
 
   /**
   @brief Sets the external forces of the MassPoint.
@@ -150,8 +152,33 @@ public:
   */
   glm::vec3 getColour();
 
+  /**
+  @brief Attaches a Spring to the MassPoint.
+  @param[in] _id The id of the Spring.
+  @param[in] _plane The plane of the Spring.
+  @param[in] _springForce A pointer to the force of the spring.
+  @param[in] _damping The damping value of the spring.
+  */
+  void addSpringInfo(unsigned int _id, char _type, char _plane,
+                     std::shared_ptr<glm::vec3> _springForce,
+                     float _damping);
 
 private:
+  ///A structure for the spring data
+  struct SpringInfo
+  {
+    ///The id's of the attached springs.
+    unsigned int m_id;
+    ///The type of spring, either A or B based on where it attaches to the spring.
+    char m_type;
+    ///The plane of the spring, either V for vertical or H for horizontal.
+    char m_plane;
+    ///A pointer to the force of the spring.
+    std::shared_ptr<glm::vec3> m_springForce;
+    ///The damping value of the spring.
+    float m_damping;
+  };
+
   ///The mass of the MassPoint.
   float m_mass;
   ///The position of the MassPoint.
@@ -164,8 +191,10 @@ private:
   glm::vec3 m_externalForces;
   ///A boolean for if the MassPoint is locked in place.
   bool m_isLocked;
-  ///The colour of the MassPoint. This is mostly for testing
+  ///The colour of the MassPoint. This is mostly for testing.
   glm::vec3 m_colour;
+  ///The information of the attached spring.
+  std::vector<SpringInfo> m_springInfo;
 };
 
 #endif // MASSPOINT_H_

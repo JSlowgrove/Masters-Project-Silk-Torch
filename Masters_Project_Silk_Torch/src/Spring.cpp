@@ -1,15 +1,19 @@
 #include "Spring.h"
 #include "Logging.h"
+#include <cmath>
 
-Spring::Spring() : m_springConstant(10.0f), m_damping(20.0f)
+Spring::Spring(unsigned int _id) : m_springConstant(10.0f), m_damping(20.0f), m_id(_id),
+  m_springForce(std::shared_ptr<glm::vec3>(new glm::vec3(0.0f,0.0f,0.0f)))
 {
 }
 
-Spring::Spring(float _springConstant) : m_springConstant(_springConstant), m_damping(20.0f)
+Spring::Spring(float _springConstant, unsigned int _id) : m_springConstant(_springConstant), m_damping(20.0f),
+  m_id(_id), m_springForce(std::shared_ptr<glm::vec3>(new glm::vec3(0.0f,0.0f,0.0f)))
 {
 }
 
-Spring::Spring(float _springConstant, float _damping) : m_springConstant(_springConstant), m_damping(_damping)
+Spring::Spring(float _springConstant, float _damping, unsigned int _id) : m_springConstant(_springConstant),
+  m_damping(_damping), m_id(_id), m_springForce(std::shared_ptr<glm::vec3>(new glm::vec3(0.0f,0.0f,0.0f)))
 {
 }
 
@@ -37,14 +41,24 @@ void Spring::setDamping(float _damping)
   m_damping = _damping;
 }
 
-glm::vec3 Spring::getPointAAttachedPos()
+unsigned int Spring::getId()
 {
-  return m_pointAAttachedPos;
+  return m_id;
 }
 
-void Spring::setPointAAttachedPos(glm::vec3 _pointAAttachedPos)
+void Spring::setId(unsigned int _id)
 {
-  m_pointAAttachedPos = _pointAAttachedPos;
+  m_id = _id;
+}
+
+char Spring::getPlane()
+{
+  return m_plane;
+}
+
+void Spring::setPlane(char _plane)
+{
+  m_plane = _plane;
 }
 
 std::shared_ptr<MassPoint> Spring::getPointA()
@@ -55,6 +69,9 @@ std::shared_ptr<MassPoint> Spring::getPointA()
 void Spring::setPointA(std::shared_ptr<MassPoint> _pointA)
 {
   m_pointA = _pointA;
+
+  //add the spring to the point
+  m_pointA->addSpringInfo(m_id, 'A', m_plane, m_springForce, m_damping);
 }
 
 std::shared_ptr<MassPoint> Spring::getPointB()
@@ -65,21 +82,24 @@ std::shared_ptr<MassPoint> Spring::getPointB()
 void Spring::setPointB(std::shared_ptr<MassPoint> _pointB)
 {
   m_pointB = _pointB;
+
+  //add the spring to the point
+  m_pointB->addSpringInfo(m_id, 'B', m_plane, m_springForce, m_damping);
 }
+
+std::shared_ptr<glm::vec3> Spring::getSpringForce()
+{
+  return m_springForce;
+}
+
 
 void Spring::update()
 {
-  //calculated spring force of point A
-  glm::vec3 springForceA = -m_springConstant * (m_pointA->getPos() - m_pointAAttachedPos);
-  //calculated spring force of point B
-  glm::vec3 springForceB = -m_springConstant * (m_pointB->getPos() - m_pointA->getPos());
-
-  //calculate damping force of point A
-  glm::vec3 dampingForcePointA = m_damping * m_pointA->getVel();
-  //calculate damping force of point B
-  glm::vec3 dampingForcePointB = m_damping * m_pointB->getVel();
-
-  //update the internal force of the points
-  m_pointA->updateInternalForces(springForceA - dampingForcePointA -springForceB + dampingForcePointB);
-  m_pointB->updateInternalForces(springForceB - dampingForcePointB);
+  //calculate the force of the spring
+  glm::vec3 len = m_pointB->getPos() - m_pointA->getPos();
+  glm::vec3 updatedSpringForce = m_springConstant * (glm::vec3(std::abs(len.x),std::abs(len.y),std::abs(len.z)) - 1.0f);
+  m_springForce->x = updatedSpringForce.x;
+  m_springForce->y = updatedSpringForce.y;
+  m_springForce->z = updatedSpringForce.z;
+  //Logging::logGLMVec3("Updated Spring Force: ", updatedSpringForce, true);
 }

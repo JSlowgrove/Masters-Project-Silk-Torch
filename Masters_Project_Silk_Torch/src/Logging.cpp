@@ -72,5 +72,16 @@ namespace Logging
   std::string boolToString(bool _booleanIn)
 	{
     return _booleanIn ? "True" : "False";
-	}
+  }
+
+  void logGLMVec3(std::string _message, glm::vec3 _glmVec3, bool _printToLog)
+  {
+    std::string outMessage = _message + "GLM::VEC3: " + std::to_string(_glmVec3.x) + ", " + std::to_string(_glmVec3.y) + ", " + std::to_string(_glmVec3.z);
+    std::cout << outMessage << '\n';
+    if (_printToLog)
+    {
+      printToLogFile(outMessage);
+    }
+  }
+
 }

@@ -55,6 +55,14 @@ namespace Logging
 	*/
   void logGLMVec3(glm::vec3 _glmVec3, bool _printToLog);
 
+  /**
+  @brief Logs a message and a glm::vec3.
+  @param[in] _message The message.
+  @param[in] _glmVec3 The glm::vec3 to log.
+  @param[in] _printToLog A boolean for whether to print to the log.
+  */
+  void logGLMVec3(std::string _message, glm::vec3 _glmVec3, bool _printToLog);
+
 	/**
 	@brief Prints the message out into the log file.
   @param[in] _message The message.

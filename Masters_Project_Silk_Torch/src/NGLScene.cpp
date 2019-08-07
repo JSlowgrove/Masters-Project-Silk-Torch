@@ -10,7 +10,8 @@
 
 #include "CustomDefs.h"
 
-NGLScene::NGLScene( QWidget *_parent ) : QOpenGLWidget( _parent ), m_projectRunning(false)
+NGLScene::NGLScene( QWidget *_parent ) : QOpenGLWidget( _parent ), m_projectRunning(false), m_gridSize(3),
+  m_massSpringObj(MassSpringObject(m_gridSize))
 {
 
   // set this widget to have the initial keyboard focus
@@ -26,10 +27,6 @@ NGLScene::NGLScene( QWidget *_parent ) : QOpenGLWidget( _parent ), m_projectRunn
 
   //set the number of milliseconds the frame timer should run at
   m_timerMilliseconds = 10;
-
-  //initalise the MassSpringObject
-  m_gridSize = 3;
-  m_massSpringObj = MassSpringObject(m_gridSize);
 }
 
 NGLScene::~NGLScene()
@@ -200,6 +197,9 @@ void NGLScene::timerEvent(QTimerEvent *_event)
 {
   //calculate the dt from the frame timer
   float dt = 1.0f / (m_timerMilliseconds * 1000.0f);
+
+  //TESTING
+  //dt = 1.0f;
 
   //update the cloth
   m_massSpringObj.update(dt);

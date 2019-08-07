@@ -67,7 +67,7 @@ void MassSpringObject::update(float _dt)
   //apply the external forces to the points and reset the internal forces
   for (auto point : m_points)
   {
-    point->setExternalForces(glm::vec3(0.0f,-GRAVITY,0.0f));
+    point->setExternalForces(glm::vec3(0.0f,GRAVITY,0.0f));
     point->setInternalForces(glm::vec3(0.0f,0.0f,0.0f));
   }
 
@@ -77,10 +77,13 @@ void MassSpringObject::update(float _dt)
     spring->update();
   }
 
+  /*Logging::logGLMVec3("Updated Spring Force: ", glm::vec3(m_springs[2]->getSpringForce()->x,
+                      m_springs[2]->getSpringForce()->y, m_springs[2]->getSpringForce()->z), true);*/
+
   //update the MassPoints
   for (auto point : m_points)
   {
-    point->update(_dt);
+    point->update(_dt * 100.0f);
   }
 
   //update the vertices of the MassSpringObject
@@ -133,8 +136,12 @@ void MassSpringObject::generateGrid(float _mass)
     }
   }
 
-  /*//TESTING
-  for (unsigned long i = 0; i < m_points.size(); ++i)
+  //lock the top two corners
+  m_points[(m_gridSize * m_gridSize)-1]->lock();
+  m_points[(m_gridSize * m_gridSize)-(m_gridSize)]->lock();
+
+  //TESTING
+  /*for (unsigned long i = 0; i < m_points.size(); ++i)
   {
     //right column
     if (i % m_gridSize == m_gridSize - 1)
@@ -198,44 +205,28 @@ void MassSpringObject::updateVertices()
 
 void MassSpringObject::generateSprings()
 {
-  for (unsigned long i = 0; i < m_points.size(); ++i)
+  for (unsigned int i = 0; i < m_points.size(); ++i)
   {
     //check if not on right side of the mass spring object
     if (i % m_gridSize != 0)
     {
       //hoizontal Spring
-      std::shared_ptr<Spring> spring(new Spring(10.0f));
+      std::shared_ptr<Spring> spring(new Spring(10.0f, 1.0f, i));
+      spring->setPlane('H');
       spring->setPointA(m_points[i]);
       spring->setPointB(m_points[i - 1]);
-      //check if not on the left side
-      if (i % m_gridSize != m_gridSize-1)
-      {
-        //Logging::logI("hor " + std::to_string(i+1));
-        //add for force from left
-        spring->setPointAAttachedPos(m_points[i+1]->getPos());
-      }
-      else
-      {
-        //Logging::logI("hor 0");
-        //use self to cancel out force from left
-        spring->setPointAAttachedPos(spring->getPointA()->getPos());
-      }
       m_springs.push_back(spring);
-      //Logging::logI("hor point a " + std::to_string(i) + " point b " + std::to_string(i-1));
     }
 
     //check if not on top side of the mass spring object
     if (i < m_points.size() - m_gridSize)
     {
       //vertical Spring
-      std::shared_ptr<Spring> spring(new Spring(10.0f));
+      std::shared_ptr<Spring> spring(new Spring(10.0f, 1.0f, i));
+      spring->setPlane('V');
       spring->setPointA(m_points[i + m_gridSize]);
       spring->setPointB(m_points[i]);
-      Logging::logI("i " + std::to_string(i));
-      Logging::logI("vert " + std::to_string(i+m_gridSize));
-      spring->setPointAAttachedPos(m_points[i+m_gridSize]->getPos());
       m_springs.push_back(spring);
-      //Logging::logI("vert point a " + std::to_string(i + m_gridSize) + " point b " + std::to_string(i));
     }
   }
 }

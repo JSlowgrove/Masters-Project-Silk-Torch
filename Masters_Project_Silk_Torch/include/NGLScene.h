@@ -98,10 +98,10 @@ private:
   std::unique_ptr<ngl::AbstractVAO> m_vao;
   ///Boolean for if the project is running
   bool m_projectRunning;
-  ///The mass spring object
-  MassSpringObject m_massSpringObj;
   ///The size of the massSpringObj grid
   unsigned int m_gridSize;
+  ///The mass spring object
+  MassSpringObject m_massSpringObj;
 
 protected:
   /**
