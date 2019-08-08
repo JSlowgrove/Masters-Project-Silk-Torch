@@ -69,6 +69,9 @@ void MassSpringObject::update(float _dt)
   {
     point->setExternalForces(glm::vec3(0.0f,GRAVITY,0.0f));
     point->setInternalForces(glm::vec3(0.0f,0.0f,0.0f));
+
+    //TESTING
+    //point->setExternalForces(glm::vec3(GRAVITY,0.0f,0.0f));
   }
 
   //update the Springs
@@ -140,27 +143,20 @@ void MassSpringObject::generateGrid(float _mass)
   //m_points[(m_gridSize * m_gridSize)-1]->lock();
   //m_points[(m_gridSize * m_gridSize)-(m_gridSize)]->lock();
 
-  //tmp lock top row
+  //TESTING
+  //lock top row
   for (unsigned int i = 1; i <= m_gridSize; ++i)
   {
     m_points[(m_gridSize * m_gridSize)-i]->lock();
     m_points[(m_gridSize * m_gridSize)-i]->setColour(glm::vec3(1.0f,0.0f,0.0f));
   }
-  //TESTING
   /*for (unsigned long i = 0; i < m_points.size(); ++i)
   {
     //right column
-    if (i % m_gridSize == m_gridSize - 1)
+    if (i % m_gridSize == m_gridSize-1)
     {
-      Logging::logI("grid " + std::to_string(i));
-
+      m_points[i]->lock();
       m_points[i]->setColour(glm::vec3(1.0f,0.0f,0.0f));
-    }
-
-    //bottom row
-    if (i >= m_gridSize)
-    {
-      m_points[i]->setColour(glm::vec3(0.0f,0.0f,1.0f));
     }
   }*/
 }

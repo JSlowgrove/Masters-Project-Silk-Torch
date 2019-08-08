@@ -112,10 +112,11 @@ void Spring::setRestLength(float _restLength)
 void Spring::update()
 {
   //calculate the force of the spring
-  glm::vec3 len = m_pointB->getPos() - m_pointA->getPos();
-  glm::vec3 updatedSpringForce = m_springConstant * (glm::vec3(std::abs(len.x),std::abs(len.y),std::abs(len.z)) - m_restLength);
-  m_springForce->x = updatedSpringForce.x;
-  m_springForce->y = updatedSpringForce.y;
-  m_springForce->z = updatedSpringForce.z;
-  //Logging::logGLMVec3("Updated Spring Force: ", updatedSpringForce, true);
+  float springLength = glm::distance(m_pointA->getPos(), m_pointB->getPos());
+  float springForceMagnitude = -m_springConstant * (springLength - m_restLength);
+  glm::vec3 normalisedSpringDirectionVector = glm::normalize(m_pointB->getPos() - m_pointA->getPos());
+  glm::vec3 springForce = normalisedSpringDirectionVector * springForceMagnitude;
+  m_springForce->x = springForce.x;
+  m_springForce->y = springForce.y;
+  m_springForce->z = springForce.z;
 }
