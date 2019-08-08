@@ -105,17 +105,17 @@ void MassPoint::calculateInternalForces()
       switch (spring.m_type)
       {
       case 'A':
-          //if it is point a on the spring the the spring force is - and the damping force is +
-          //m_internalForces.x += -spring.m_springForce->x + dampingForce.x;
-          m_internalForces.y += -spring.m_springForce->y + dampingForce.y;
-          //m_internalForces.z += -spring.m_springForce->z + dampingForce.z;
+          //if it is point a on the spring the the spring force is -
+          m_internalForces.x += -spring.m_springForce->x;
+          m_internalForces.y += -spring.m_springForce->y;
+          m_internalForces.z += -spring.m_springForce->z;
         break;
 
       case 'B':
-          //if it is point a on the spring the the spring force is + and the damping force is -
-          //m_internalForces.x += spring.m_springForce->x - dampingForce.x;
-          m_internalForces.y += spring.m_springForce->y - dampingForce.y;
-          //m_internalForces.z += spring.m_springForce->z - dampingForce.z;
+          //if it is point a on the spring the the spring force is +
+          m_internalForces.x += spring.m_springForce->x;
+          m_internalForces.y += spring.m_springForce->y;
+          m_internalForces.z += spring.m_springForce->z;
         break;
       }
     break;
@@ -124,17 +124,17 @@ void MassPoint::calculateInternalForces()
       switch (spring.m_type)
       {
       case 'A':
-          //if it is point a on the spring the the spring force is - and the damping force is +
-          //m_internalForces.x += -spring.m_springForce->x + dampingForce.x;
-          //m_internalForces.y += -spring.m_springForce->y + dampingForce.y;
-          //m_internalForces.z += -spring.m_springForce->z + dampingForce.z;
+          //if it is point a on the spring the the spring force is -
+          m_internalForces.x += -spring.m_springForce->x;
+          m_internalForces.y += -spring.m_springForce->y;
+          m_internalForces.z += -spring.m_springForce->z;
         break;
 
       case 'B':
-          //if it is point a on the spring the the spring force is + and the damping force is -
-          //m_internalForces.x += spring.m_springForce->x - dampingForce.x;
-          //m_internalForces.y += spring.m_springForce->y - dampingForce.y;
-          //m_internalForces.z += spring.m_springForce->z - dampingForce.z;
+          //if it is point a on the spring the the spring force is +
+          m_internalForces.x += spring.m_springForce->x;
+          m_internalForces.y += spring.m_springForce->y;
+          m_internalForces.z += spring.m_springForce->z;
         break;
       }
      break;
@@ -144,6 +144,7 @@ void MassPoint::calculateInternalForces()
       break;
 
     }
+    m_internalForces += -dampingForce;
   }
 }
 

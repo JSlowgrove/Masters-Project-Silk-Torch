@@ -114,8 +114,8 @@ void Spring::update()
   //calculate the force of the spring
   float springLength = glm::distance(m_pointA->getPos(), m_pointB->getPos());
   float springForceMagnitude = -m_springConstant * (springLength - m_restLength);
-  glm::vec3 normalisedSpringDirectionVector = glm::normalize(m_pointB->getPos() - m_pointA->getPos());
-  glm::vec3 springForce = normalisedSpringDirectionVector * springForceMagnitude;
+  glm::vec3 springDirection = glm::normalize(m_pointB->getPos() - m_pointA->getPos());
+  glm::vec3 springForce = springDirection * springForceMagnitude;
   m_springForce->x = springForce.x;
   m_springForce->y = springForce.y;
   m_springForce->z = springForce.z;

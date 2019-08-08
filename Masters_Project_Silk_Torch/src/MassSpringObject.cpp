@@ -69,9 +69,6 @@ void MassSpringObject::update(float _dt)
   {
     point->setExternalForces(glm::vec3(0.0f,GRAVITY,0.0f));
     point->setInternalForces(glm::vec3(0.0f,0.0f,0.0f));
-
-    //TESTING
-    //point->setExternalForces(glm::vec3(GRAVITY,0.0f,0.0f));
   }
 
   //update the Springs
@@ -79,10 +76,6 @@ void MassSpringObject::update(float _dt)
   {
     spring->update();
   }
-
-  /*Logging::logGLMVec3("Updated Spring Force: ", glm::vec3(m_springs[2]->getSpringForce()->x,
-                      m_springs[2]->getSpringForce()->y, m_springs[2]->getSpringForce()->z), true);*/
-
   //update the MassPoints
   for (auto point : m_points)
   {
@@ -140,25 +133,8 @@ void MassSpringObject::generateGrid(float _mass)
   }
 
   //lock the top two corners
-  //m_points[(m_gridSize * m_gridSize)-1]->lock();
-  //m_points[(m_gridSize * m_gridSize)-(m_gridSize)]->lock();
-
-  //TESTING
-  //lock top row
-  for (unsigned int i = 1; i <= m_gridSize; ++i)
-  {
-    m_points[(m_gridSize * m_gridSize)-i]->lock();
-    m_points[(m_gridSize * m_gridSize)-i]->setColour(glm::vec3(1.0f,0.0f,0.0f));
-  }
-  /*for (unsigned long i = 0; i < m_points.size(); ++i)
-  {
-    //right column
-    if (i % m_gridSize == m_gridSize-1)
-    {
-      m_points[i]->lock();
-      m_points[i]->setColour(glm::vec3(1.0f,0.0f,0.0f));
-    }
-  }*/
+  m_points[(m_gridSize * m_gridSize)-1]->lock();
+  m_points[(m_gridSize * m_gridSize)-(m_gridSize)]->lock();
 }
 
 void MassSpringObject::generateIndices()
@@ -208,14 +184,15 @@ void MassSpringObject::updateVertices()
 void MassSpringObject::generateSprings()
 {
   float k = 100.0f;
-  float damp = 10.0f;
+  float damp = 5.0f;
+  float restLength = 1.0f;
   for (unsigned int i = 0; i < m_points.size(); ++i)
   {
     //check if not on right side of the mass spring object
     if (i % m_gridSize != 0)
     {
       //hoizontal Spring
-      std::shared_ptr<Spring> spring(new Spring(k, damp, i));
+      std::shared_ptr<Spring> spring(new Spring(k, damp, restLength, i));
       spring->setPlane('H');
       spring->setPointA(m_points[i]);
       spring->setPointB(m_points[i - 1]);
@@ -226,7 +203,7 @@ void MassSpringObject::generateSprings()
     if (i < m_points.size() - m_gridSize)
     {
       //vertical Spring
-      std::shared_ptr<Spring> spring(new Spring(k, damp, i));
+      std::shared_ptr<Spring> spring(new Spring(k, damp, restLength, i));
       spring->setPlane('V');
       spring->setPointA(m_points[i + m_gridSize]);
       spring->setPointB(m_points[i]);
