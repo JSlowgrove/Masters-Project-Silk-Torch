@@ -3,18 +3,24 @@
 #include <cmath>
 
 Spring::Spring(unsigned int _id) : m_springConstant(10.0f), m_damping(20.0f), m_id(_id),
-  m_springForce(std::shared_ptr<glm::vec3>(new glm::vec3(0.0f,0.0f,0.0f)))
+  m_springForce(std::shared_ptr<glm::vec3>(new glm::vec3(0.0f,0.0f,0.0f))), m_restLength(1.0f)
 {
 }
 
 Spring::Spring(float _springConstant, unsigned int _id) : m_springConstant(_springConstant), m_damping(20.0f),
-  m_id(_id), m_springForce(std::shared_ptr<glm::vec3>(new glm::vec3(0.0f,0.0f,0.0f)))
+  m_id(_id), m_springForce(std::shared_ptr<glm::vec3>(new glm::vec3(0.0f,0.0f,0.0f))), m_restLength(1.0f)
 {
 }
 
 Spring::Spring(float _springConstant, float _damping, unsigned int _id) : m_springConstant(_springConstant),
-  m_damping(_damping), m_id(_id), m_springForce(std::shared_ptr<glm::vec3>(new glm::vec3(0.0f,0.0f,0.0f)))
+  m_damping(_damping), m_id(_id), m_springForce(std::shared_ptr<glm::vec3>(new glm::vec3(0.0f,0.0f,0.0f))), m_restLength(1.0f)
 {
+}
+
+Spring::Spring(float _springConstant, float _damping, float _restLength, unsigned int _id) : m_springConstant(_springConstant),
+  m_damping(_damping), m_id(_id), m_springForce(std::shared_ptr<glm::vec3>(new glm::vec3(0.0f,0.0f,0.0f))), m_restLength(_restLength)
+{
+
 }
 
 Spring::~Spring()
@@ -92,12 +98,22 @@ std::shared_ptr<glm::vec3> Spring::getSpringForce()
   return m_springForce;
 }
 
+float Spring::getRestLength()
+{
+  return m_restLength;
+}
+
+void Spring::setRestLength(float _restLength)
+{
+  m_restLength = _restLength;
+}
+
 
 void Spring::update()
 {
   //calculate the force of the spring
   glm::vec3 len = m_pointB->getPos() - m_pointA->getPos();
-  glm::vec3 updatedSpringForce = m_springConstant * (glm::vec3(std::abs(len.x),std::abs(len.y),std::abs(len.z)) - 1.0f);
+  glm::vec3 updatedSpringForce = m_springConstant * (glm::vec3(std::abs(len.x),std::abs(len.y),std::abs(len.z)) - m_restLength);
   m_springForce->x = updatedSpringForce.x;
   m_springForce->y = updatedSpringForce.y;
   m_springForce->z = updatedSpringForce.z;

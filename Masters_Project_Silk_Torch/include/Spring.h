@@ -18,13 +18,13 @@ class Spring
 {
 public:
   /**
-  @brief Constructs the Spring object using the default spring constant (10.0f) and the default damping value (20.0f).
+  @brief Constructs the Spring object using the default spring constant (10.0f), the default damping value (20.0f) and the default rest length (1.0f).
   @param[in] _id The id of the Spring.
   */
   Spring(unsigned int _id);
 
   /**
-  @brief Constructs the Spring object using the default damping value (20.0f).
+  @brief Constructs the Spring object using the default damping value (20.0f) and the default rest length (1.0f).
   @param[in] _springConstant The constant for the object
   @param[in] _id The id of the Spring.
   */
@@ -32,11 +32,20 @@ public:
 
   /**
   @brief Constructs the Spring object.
-  @param[in] _springConstant The Spring constant of the Spring.
-  @param[in] _restLength The damping value of the Spring.
+  @param[in] _springConstant The Spring constant of the Spring using the default rest length (1.0f).
+  @param[in] _damping The damping value of the Spring.
   @param[in] _id The id of the Spring.
   */
   Spring(float _springConstant, float _damping, unsigned int _id);
+
+  /**
+  @brief Constructs the Spring object.
+  @param[in] _springConstant The Spring constant of the Spring.
+  @param[in] _damping The damping value of the Spring.
+  @param[in] _restLength The rest length of the Spring.
+  @param[in] _id The id of the Spring.
+  */
+  Spring(float _springConstant, float _damping, float _restLength, unsigned int _id);
 
   /**
   @brief A destructor for the Spring object.
@@ -122,6 +131,18 @@ public:
   std::shared_ptr<glm::vec3> getSpringForce();
 
   /**
+  @brief Gets the rest length of the Spring.
+  @returns The rest length of the Spring.
+  */
+  float getRestLength();
+
+  /**
+  @brief Sets the rest length of the Spring.
+  @param[in] _restLength The rest length of the Spring.
+  */
+  void setRestLength(float _restLength);
+
+  /**
   @brief Update the Spring.
   */
   void update();
@@ -141,6 +162,8 @@ protected:
   char m_plane;
   ///The force of the spring.
   std::shared_ptr<glm::vec3> m_springForce;
+  ///The rest length of the spring.
+  float m_restLength;
 };
 
 #endif // SPRING_H_
