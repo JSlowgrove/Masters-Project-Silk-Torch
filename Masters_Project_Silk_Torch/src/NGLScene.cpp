@@ -196,7 +196,7 @@ void NGLScene::restartProject()
 void NGLScene::timerEvent(QTimerEvent *_event)
 {
   //calculate the dt from the frame timer
-  float dt = 1.0f / (m_timerMilliseconds * 1000.0f);
+  float dt = m_timerMilliseconds / 1000.0f;
 
   //TESTING
   //dt = 1.0f;

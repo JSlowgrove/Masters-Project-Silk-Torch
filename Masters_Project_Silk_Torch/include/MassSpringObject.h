@@ -100,6 +100,8 @@ private:
   std::vector<unsigned int> m_indices;
   ///The vertices of the MassSpringObject.
   std::vector<glm::vec3> m_vertices;
+  ///The time since last wind impluse
+  float m_impulseTime;
 
   /**
   @brief Initialises the MassSpringObject.

@@ -3,17 +3,17 @@
 #include "Utilities.h"
 #include "Logging.h"
 
-MassSpringObject::MassSpringObject() : m_gridSize(10)
+MassSpringObject::MassSpringObject() : m_gridSize(10), m_impulseTime(0.0f)
 {
   initialiseMassSpringObject(10.0f);
 }
 
-MassSpringObject::MassSpringObject(unsigned int _gridSize) : m_gridSize(_gridSize)
+MassSpringObject::MassSpringObject(unsigned int _gridSize) : m_gridSize(_gridSize), m_impulseTime(0.0f)
 {
   initialiseMassSpringObject(10.0f);
 }
 
-MassSpringObject::MassSpringObject(unsigned int _gridSize, float _mass) : m_gridSize(_gridSize)
+MassSpringObject::MassSpringObject(unsigned int _gridSize, float _mass) : m_gridSize(_gridSize), m_impulseTime(0.0f)
 {
   initialiseMassSpringObject(_mass);
 }
@@ -64,9 +64,30 @@ std::vector<glm::vec3> MassSpringObject::getVertices()
 
 void MassSpringObject::update(float _dt)
 {
+  //update the impulse time
+  m_impulseTime += _dt;
+
+  //check if impluse needs to be fired
+  bool impulse = false;
+  if (m_impulseTime > 1.0f)
+  {
+    //reset impulse time
+    m_impulseTime -= 1.0f;
+    impulse = true;
+    Logging::logI("IMPULSE");
+  }
+
   //apply the external forces to the points and reset the internal forces
   for (auto point : m_points)
   {
+    /*if (impulse)
+    {
+      point->setExternalForces(glm::vec3(0.0f,-10.0f,0.0f));
+    }
+    else
+    {
+      point->setExternalForces(glm::vec3(0.0f,0.0f,0.0f));
+    }*/
     point->setExternalForces(glm::vec3(0.0f,GRAVITY,0.0f));
     point->setInternalForces(glm::vec3(0.0f,0.0f,0.0f));
   }
@@ -79,7 +100,7 @@ void MassSpringObject::update(float _dt)
   //update the MassPoints
   for (auto point : m_points)
   {
-    point->update(_dt * 100.0f);
+    point->update(_dt);
   }
 
   //update the vertices of the MassSpringObject
@@ -135,6 +156,13 @@ void MassSpringObject::generateGrid(float _mass)
   //lock the top two corners
   m_points[(m_gridSize * m_gridSize)-1]->lock();
   m_points[(m_gridSize * m_gridSize)-(m_gridSize)]->lock();
+
+  //lock top row
+  /*for (unsigned int i = 1; i <= m_gridSize; i++)
+  {
+    m_points[(m_gridSize*m_gridSize)-i]->lock();
+    m_points[(m_gridSize*m_gridSize)-i]->setColour(glm::vec3(1.0f,0.0f,0.0f));
+  }*/
 }
 
 void MassSpringObject::generateIndices()
