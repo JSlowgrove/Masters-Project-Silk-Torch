@@ -3,17 +3,17 @@
 #include "Utilities.h"
 #include "Logging.h"
 
-MassSpringObject::MassSpringObject() : m_gridSize(10), m_impulseTime(0.0f)
+MassSpringObject::MassSpringObject() : m_gridSize(10), m_impulseTime(0.0f), m_impulse(true)
 {
   initialiseMassSpringObject(10.0f);
 }
 
-MassSpringObject::MassSpringObject(unsigned int _gridSize) : m_gridSize(_gridSize), m_impulseTime(0.0f)
+MassSpringObject::MassSpringObject(unsigned int _gridSize) : m_gridSize(_gridSize), m_impulseTime(0.0f), m_impulse(true)
 {
   initialiseMassSpringObject(10.0f);
 }
 
-MassSpringObject::MassSpringObject(unsigned int _gridSize, float _mass) : m_gridSize(_gridSize), m_impulseTime(0.0f)
+MassSpringObject::MassSpringObject(unsigned int _gridSize, float _mass) : m_gridSize(_gridSize), m_impulseTime(0.0f), m_impulse(true)
 {
   initialiseMassSpringObject(_mass);
 }
@@ -67,28 +67,34 @@ void MassSpringObject::update(float _dt)
   //update the impulse time
   m_impulseTime += _dt;
 
-  //check if impluse needs to be fired
-  bool impulse = false;
-  if (m_impulseTime > 1.0f)
+  //check if impluse needs to be turned on or off
+  if (m_impulseTime > 1.0f && m_impulse)
   {
     //reset impulse time
     m_impulseTime -= 1.0f;
-    impulse = true;
-    Logging::logI("IMPULSE");
+    m_impulse = false;
+    //Logging::logI("IMPULSE");
+  }
+  else if (m_impulseTime > 5.0f && !m_impulse)
+  {
+    //reset impulse time
+    m_impulseTime -= 5.0f;
+    m_impulse = true;
+    //Logging::logI("IMPULSE");
   }
 
   //apply the external forces to the points and reset the internal forces
   for (auto point : m_points)
   {
-    /*if (impulse)
+    if (m_impulse)
     {
-      point->setExternalForces(glm::vec3(0.0f,-10.0f,0.0f));
+      point->setExternalForces(glm::vec3(0.0f,0.0f,-10.0f));
     }
     else
     {
       point->setExternalForces(glm::vec3(0.0f,0.0f,0.0f));
-    }*/
-    point->setExternalForces(glm::vec3(0.0f,GRAVITY,0.0f));
+    }
+    point->setExternalForces(glm::vec3(point->getExternalForces().x,GRAVITY,point->getExternalForces().z));
     point->setInternalForces(glm::vec3(0.0f,0.0f,0.0f));
   }
 
@@ -154,15 +160,15 @@ void MassSpringObject::generateGrid(float _mass)
   }
 
   //lock the top two corners
-  m_points[(m_gridSize * m_gridSize)-1]->lock();
-  m_points[(m_gridSize * m_gridSize)-(m_gridSize)]->lock();
+  //m_points[(m_gridSize * m_gridSize)-1]->lock();
+  //m_points[(m_gridSize * m_gridSize)-(m_gridSize)]->lock();
 
   //lock top row
-  /*for (unsigned int i = 1; i <= m_gridSize; i++)
+  for (unsigned int i = 1; i <= m_gridSize; i++)
   {
     m_points[(m_gridSize*m_gridSize)-i]->lock();
     m_points[(m_gridSize*m_gridSize)-i]->setColour(glm::vec3(1.0f,0.0f,0.0f));
-  }*/
+  }
 }
 
 void MassSpringObject::generateIndices()
@@ -212,7 +218,7 @@ void MassSpringObject::updateVertices()
 void MassSpringObject::generateSprings()
 {
   float k = 100.0f;
-  float damp = 5.0f;
+  float damp = 0.1f;
   float restLength = 1.0f;
   for (unsigned int i = 0; i < m_points.size(); ++i)
   {

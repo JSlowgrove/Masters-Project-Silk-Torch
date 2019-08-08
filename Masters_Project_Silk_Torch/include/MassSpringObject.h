@@ -102,6 +102,7 @@ private:
   std::vector<glm::vec3> m_vertices;
   ///The time since last wind impluse
   float m_impulseTime;
+  bool m_impulse;
 
   /**
   @brief Initialises the MassSpringObject.
