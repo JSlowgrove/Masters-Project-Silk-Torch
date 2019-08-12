@@ -101,6 +101,7 @@ void MassPoint::calculateInternalForces()
 
     switch (spring.m_plane)
     {
+    //vertical spring
     case 'V':
       switch (spring.m_type)
       {
@@ -120,6 +121,7 @@ void MassPoint::calculateInternalForces()
       }
     break;
 
+    //horizonal spring
     case 'H':
       switch (spring.m_type)
       {

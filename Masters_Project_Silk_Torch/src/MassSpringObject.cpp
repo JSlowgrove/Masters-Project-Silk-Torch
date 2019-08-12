@@ -31,6 +31,9 @@ void MassSpringObject::initialiseMassSpringObject(float _mass)
 
   // generate the vertices
   generateVertices();
+
+  // generate the normals
+  generateNormals();
 }
 
 MassSpringObject::~MassSpringObject()
@@ -57,9 +60,19 @@ std::vector<unsigned int> MassSpringObject::getIndices()
   return m_indices;
 }
 
+std::vector<glm::vec2> MassSpringObject::getUVs()
+{
+  return m_uvs;
+}
+
 std::vector<glm::vec3> MassSpringObject::getVertices()
 {
   return m_vertices;
+}
+
+std::vector<glm::vec3> MassSpringObject::getNormals()
+{
+  return m_normals;
 }
 
 void MassSpringObject::update(float _dt)
@@ -193,6 +206,10 @@ void MassSpringObject::generateIndices()
         m_indices.push_back(i);
         m_indices.push_back(i + m_gridSize + 1);
         m_indices.push_back(i + 1);
+
+        //generate the texture coordinates for the heightmap
+        m_uvs.push_back(glm::vec2(float(x) * (1.0f / m_gridSize),
+                                  float(m_gridSize - y) * (1.0f / m_gridSize)));
       }
     ++i;
     }
@@ -244,4 +261,58 @@ void MassSpringObject::generateSprings()
       m_springs.push_back(spring);
     }
   }
+}
+
+void MassSpringObject::generateNormals()
+{
+  //create the normals for all of the triangles
+  for (unsigned int i = 0; i < m_gridSize * m_gridSize; i++)
+  {
+    if (i >= (m_gridSize*m_gridSize) - m_gridSize - 1) //quick hack to get normal array size to match vertices array
+    {
+      m_normals.push_back(m_vertices[i]);
+    }
+    else if ((i % 2) == 0)//work out if the current index is a multiple of two and switch between the needed normal type to get accordingly
+    {
+      glm::vec3 norm = getNormal(m_vertices[i], m_vertices[i + 1], m_vertices[i + m_gridSize]);
+      m_normals.push_back(norm);
+    }
+    else
+    {
+      glm::vec3 norm = getNormal(m_vertices[i + m_gridSize], m_vertices[i + 1], m_vertices[i + m_gridSize + 1]);
+      m_normals.push_back(norm);
+    }
+  }
+}
+
+glm::vec3 MassSpringObject::getNormal(glm::vec3 _a, glm::vec3 _b, glm::vec3 _c)
+{
+  //a function to work out the normals for the map
+
+  //*******************************
+  //***	C **************************
+  //***	  |\ ***********************
+  //***	^ | \ **********************
+  //***	| |  \ *********************
+  //***	  ----- ********************
+  //***	A -----> B *****************
+  //********************************
+
+  glm::vec3 ab = _b - _a; //up
+  glm::vec3 ac = _c - _a; //right
+
+  glm::vec3 normals;
+  normals.x = (ac.y*ab.z) - (ac.z*ab.y);//work out the x of the normal
+  normals.y = -((ab.z*ac.x) - (ab.x*ac.z));//work out the y of the normal
+  normals.z = (ac.x*ab.y) - (ac.y*ab.x);//work out the z of the normal
+
+  //the factor that I need to divide by to work out the normal
+  float factor = float(sqrt(double((normals.x * normals.x) + (normals.y * normals.y) + (normals.z * normals.z))));
+
+  //works out the normals
+  normals.x = normals.x / factor;
+  normals.y = normals.y / factor;
+  normals.z = normals.z / factor;
+
+  return normals;// returns the normal
 }

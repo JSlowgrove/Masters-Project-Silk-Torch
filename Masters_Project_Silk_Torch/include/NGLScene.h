@@ -9,6 +9,7 @@
 #include <QOpenGLWidget>
 #include <ngl/SimpleVAO.h>
 #include <ngl/VAOFactory.h>
+#include <ngl/ShaderLib.h>
 #include <memory>
 
 #include "glm/glm.hpp"
@@ -102,6 +103,10 @@ private:
   unsigned int m_gridSize;
   ///The mass spring object
   MassSpringObject m_massSpringObj;
+  ///The name of the texture
+  GLuint m_textureName;
+  ///The std::vector of floats for the VAO.
+  std::vector<float> m_vaoData;
 
 protected:
   /**
@@ -162,6 +167,15 @@ private:
   void buildVAO();
 
   /**
+  @brief A function to initalise a shader.
+  @param[in] _shader The shader to initalise.
+  @param[in] _vertexShaderName The name of the vertex shader to initalise.
+  @param[in] _fragmentShaderName The name of the fragment shader to initalise.
+  @param[in] _shaderName The name of the shader to initalise.
+  */
+  void initShader(ngl::ShaderLib* _shader, std::string _vertexShaderName, std::string _fragmentShaderName, std::string _shaderName);
+
+  /**
   @brief A function to draw lines based on the vertices and indices passed in.
   @param[in] _lineVertAndColour A reference to the array of vertices and colours to draw.
   @param[in] _lineIndices A reference to the array of incides to use to draw the lines.
@@ -173,6 +187,8 @@ private:
   @param _event The QT timer event.
   */
   void timerEvent(QTimerEvent *_event) override;
+
+
 };
 
 #endif //NGLSCENE_H_

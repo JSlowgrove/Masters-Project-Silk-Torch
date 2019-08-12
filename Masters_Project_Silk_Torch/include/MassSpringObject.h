@@ -67,10 +67,22 @@ public:
   std::vector<unsigned int> getIndices();
 
   /**
+  @brief Gets the uv's of the MassSpringObject.
+  @returns A std::vector of the uv's.
+  */
+  std::vector<glm::vec2> getUVs();
+
+  /**
   @brief Gets the vertices of the MassSpringObject.
   @returns A std::vector of the Vertices.
   */
   std::vector<glm::vec3> getVertices();
+
+  /**
+  @brief Gets the normals of the MassSpringObject.
+  @returns A std::vector of the normals.
+  */
+  std::vector<glm::vec3> getNormals();
 
   /**
   @brief Updates the MassSpringObject.
@@ -98,8 +110,12 @@ private:
   unsigned int m_gridSize;
   ///The indices of the MassSpringObject.
   std::vector<unsigned int> m_indices;
+  ///The uv's of the MassSpringObject.
+  std::vector<glm::vec2> m_uvs;
   ///The vertices of the MassSpringObject.
   std::vector<glm::vec3> m_vertices;
+  ///The normals of the MassSpringObject.
+  std::vector<glm::vec3> m_normals;
   ///The time since last wind impluse
   float m_impulseTime;
   bool m_impulse;
@@ -131,9 +147,23 @@ private:
   void updateVertices();
 
   /**
-  @brief Generated the springs for the MassSpringObject.
+  @brief Generate the springs for the MassSpringObject.
   */
   void generateSprings();
+
+  /**
+  @brief Generate the normals for the MassSpringObject.
+  */
+  void generateNormals();
+
+  /**
+  @brief A function to get a normal from 3 vectors.
+  @param[in] _a Vector A.
+  @param[in] _B Vector B.
+  @param[in] _c Vector C.
+  @returns A normal of the 3 vectors.
+  */
+  glm::vec3 getNormal(glm::vec3 _a, glm::vec3 _b, glm::vec3 _c);
 };
 
 #endif // MASSSPRINGOBJECT_H_
