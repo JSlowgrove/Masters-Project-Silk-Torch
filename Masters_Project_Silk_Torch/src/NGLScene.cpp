@@ -64,9 +64,10 @@ void NGLScene::initializeGL()
 
   //std::random_device rd;
   //std::mt19937 gen(rd());
-  //std::uniform_real_distribution<float> dis(-1.0f,1.0f);
+  //std::uniform_real_distribution<int> dis(1.0f,8.0f);
   //glm::vec3 colour = glm::vec3(dis(gen),dis(gen),dis(gen));
-  ngl::Texture texture("textures/ratGrid.png");
+  int textureNum = 1;
+  ngl::Texture texture("textures/texture" + std::to_string(textureNum) + ".png");
   m_textureName=texture.setTextureGL();
 
   buildVAO();
@@ -244,6 +245,9 @@ void NGLScene::timerEvent(QTimerEvent *_event)
 {
   //calculate the dt from the frame timer
   float dt = m_timerMilliseconds / 1000.0f;
+
+  //TMP for testing
+  dt = 0.5f;
 
   //update the cloth
   m_massSpringObj.update(dt);
