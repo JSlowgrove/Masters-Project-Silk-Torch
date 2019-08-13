@@ -54,7 +54,13 @@ public:
     @brief A slot to toggle wireframe mode.
     @param[in] _mode The mode passed from the toggle button.
     */
-    void toggleWireframe(bool _mode);
+    void toggleWireframe(bool _mode);    
+
+    /**
+    @brief A slot to toggle if textured.
+    @param[in] _mode The mode passed from the toggle button.
+    */
+    void toggleTextured(bool _mode);
 
     /**
     @brief A slot to run the project.
@@ -87,8 +93,8 @@ private:
   ngl::Vec3 m_position;
   ///The object to draw.
   int m_selectedObject;
-  ///The std::vector of vertices and colour for the VAO.
-  //std::vector<glm::vec3> m_vertAndColour;
+  ///The std::vector of floats for the VAO.
+  std::vector<float> m_vaoData;
   ///The std::vector of indices for the VAO
   std::vector<GLshort> m_indices;
   ///The number of millisseconds for the project timer.
@@ -105,8 +111,8 @@ private:
   MassSpringObject m_massSpringObj;
   ///The name of the texture
   GLuint m_textureName;
-  ///The std::vector of floats for the VAO.
-  std::vector<float> m_vaoData;
+  ///A flag for if the texture shader should be used.
+  bool m_textured;
 
 protected:
   /**
@@ -152,9 +158,14 @@ private:
   void wheelEvent(QWheelEvent* _event) override;
 
   /**
-  @brief A function to build the point grid VAO for the mass spring mesh.
+  @brief A function to build the point grid VAO data for the mass spring mesh.
   */
-  void buildGridVAO();
+  void buildVAOData();
+
+  /**
+  @brief A function to build the indices for the mass spring mesh.
+  */
+  void buildIndices();
 
   /**
   @brief A funciton to set the data to be used by the VAO.
@@ -187,8 +198,6 @@ private:
   @param _event The QT timer event.
   */
   void timerEvent(QTimerEvent *_event) override;
-
-
 };
 
 #endif //NGLSCENE_H_

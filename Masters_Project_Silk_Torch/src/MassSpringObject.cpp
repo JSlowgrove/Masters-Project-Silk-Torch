@@ -134,7 +134,7 @@ void MassSpringObject::reset()
   m_points.resize(0);
   //empty the springs
   m_springs.resize(0);
-  //generate the particles
+  //generate the points
   generateGrid(mass);
   //update the vertices with the reset particles
   updateVertices();
@@ -211,7 +211,7 @@ void MassSpringObject::generateIndices()
         m_indices.push_back(i + 1);
       }
 
-      //generate the texture coordinates for the heightmap
+      //generate the texture coordinates
       m_uvs.push_back(glm::vec2(float(x) * uvOffset,
                                 float(y) * uvOffset));
       ++i;

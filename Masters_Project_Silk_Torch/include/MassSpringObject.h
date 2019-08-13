@@ -116,8 +116,9 @@ private:
   std::vector<glm::vec3> m_vertices;
   ///The normals of the MassSpringObject.
   std::vector<glm::vec3> m_normals;
-  ///The time since last wind impluse
+  ///The time since last wind impluse.
   float m_impulseTime;
+  ///A boolean for if the impulse is active.
   bool m_impulse;
 
   /**

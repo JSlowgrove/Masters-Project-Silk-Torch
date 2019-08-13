@@ -168,11 +168,13 @@ void MassPoint::updateExternalForces(glm::vec3 _externalForces)
 void MassPoint::lock()
 {
   m_isLocked = true;
+  m_colour = glm::vec3(1.0f,0.0f,0.0f);
 }
 
 void MassPoint::unlock()
 {
   m_isLocked = false;
+  m_colour = glm::vec3(1.0f,1.0f,1.0f);
 }
 
 bool MassPoint::getIsLocked()
