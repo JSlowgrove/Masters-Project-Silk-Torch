@@ -97,6 +97,7 @@ void MassSpringObject::update(float _dt)
   }
 
   //apply the external forces to the points and reset the internal forces
+  float boyancy = 10.0f;
   for (auto point : m_points)
   {
     if (m_impulse)
@@ -107,7 +108,7 @@ void MassSpringObject::update(float _dt)
     {
       point->setExternalForces(glm::vec3(0.0f,0.0f,0.0f));
     }
-    point->setExternalForces(glm::vec3(point->getExternalForces().x,GRAVITY,point->getExternalForces().z));
+    point->setExternalForces(glm::vec3(point->getExternalForces().x,boyancy,point->getExternalForces().z));
     point->setInternalForces(glm::vec3(0.0f,0.0f,0.0f));
   }
 
@@ -177,10 +178,17 @@ void MassSpringObject::generateGrid(float _mass)
   //m_points[(m_gridSize * m_gridSize)-(m_gridSize)]->lock();
 
   //lock top row
-  for (unsigned int i = 1; i <= m_gridSize; i++)
+  /*for (unsigned int i = 1; i <= m_gridSize; i++)
   {
     m_points[(m_gridSize*m_gridSize)-i]->lock();
     m_points[(m_gridSize*m_gridSize)-i]->setColour(glm::vec3(1.0f,0.0f,0.0f));
+  }*/
+
+  //lock bottom row
+  for (unsigned int i = 0; i < m_gridSize; i++)
+  {
+    m_points[i]->lock();
+    m_points[i]->setColour(glm::vec3(1.0f,0.0f,0.0f));
   }
 }
 
