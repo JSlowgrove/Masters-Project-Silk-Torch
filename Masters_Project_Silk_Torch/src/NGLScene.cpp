@@ -85,11 +85,11 @@ void NGLScene::buildGridVAO()
   //std::uniform_real_distribution<float> dis(-1.0f,1.0f);
 
   //glm::vec3 colour = glm::vec3(dis(gen),dis(gen),dis(gen));
-  glm::vec3 colour = glm::vec3(1.0f,0.5f,0.0f);
+  //glm::vec3 colour = glm::vec3(1.0f,0.5f,0.0f);
   for (int i = 0; i < int(m_massSpringObj.getVertices().size()); ++i)
   {
     //m_vertAndColour.push_back(m_massSpringObj.getVertices()[ulong(i)]);
-   //m_vertAndColour.push_back(colour);
+    //m_vertAndColour.push_back(colour);
     //colour = glm::vec3(dis(gen),dis(gen),dis(gen));
 
 
@@ -225,12 +225,18 @@ void NGLScene::timerEvent(QTimerEvent *_event)
   m_massSpringObj.update(dt);
 
   //recreate the vertex and colour data using the updated cloth
-  m_vertAndColour.resize(0);
+  //m_vertAndColour.resize(0);
+  m_vaoData.resize(0);
   for (int i = 0; i < int(m_massSpringObj.getVertices().size()); ++i)
   {
     //m_vertAndColour.push_back(m_massSpringObj.getVertices()[ulong(i)]);
     //m_vertAndColour.push_back(glm::vec3(0.0f,1.0f,1.0f));
     //m_vertAndColour.push_back(m_massSpringObj.getMassPoint(U_INT(i))->getColour());
+    m_vaoData.push_back(m_massSpringObj.getVertices()[ulong(i)].x);
+    m_vaoData.push_back(m_massSpringObj.getVertices()[ulong(i)].y);
+    m_vaoData.push_back(m_massSpringObj.getVertices()[ulong(i)].z);
+    m_vaoData.push_back(m_massSpringObj.getUVs()[ulong(i)].x);
+    m_vaoData.push_back(m_massSpringObj.getUVs()[ulong(i)].y);
   }
 
   // Update and redraw
@@ -264,7 +270,7 @@ void NGLScene::setVAOData()
 
 void NGLScene::drawLines(std::vector<glm::vec3> & _lineVertAndColour, std::vector<GLshort> & _lineIndices)
 {
-  /*m_vao=ngl::VAOFactory::createVAO(ngl::simpleIndexVAO,GL_LINES);
+  m_vao=ngl::VAOFactory::createVAO(ngl::simpleIndexVAO,GL_LINES);
 
   m_vao->bind();
   m_vao->setData(ngl::SimpleIndexVAO::VertexData(_lineVertAndColour.size() * sizeof(glm::vec3),
@@ -277,5 +283,5 @@ void NGLScene::drawLines(std::vector<glm::vec3> & _lineVertAndColour, std::vecto
   m_vao->setNumIndices(_lineVertAndColour.size());
 
   m_vao->draw();
-  m_vao->unbind();*/
+  m_vao->unbind();
 }

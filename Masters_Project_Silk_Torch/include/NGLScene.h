@@ -88,7 +88,7 @@ private:
   ///The object to draw.
   int m_selectedObject;
   ///The std::vector of vertices and colour for the VAO.
-  std::vector<glm::vec3> m_vertAndColour;
+  //std::vector<glm::vec3> m_vertAndColour;
   ///The std::vector of indices for the VAO
   std::vector<GLshort> m_indices;
   ///The number of millisseconds for the project timer.

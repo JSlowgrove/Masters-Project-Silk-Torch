@@ -187,6 +187,9 @@ void MassSpringObject::generateGrid(float _mass)
 void MassSpringObject::generateIndices()
 {
   unsigned int i = 0;
+
+  float uvOffset = (1.0f / (m_gridSize - 1));
+
   for (unsigned int y = 0; y < m_gridSize; y++)
   {
     for (unsigned int x = 0; x < m_gridSize; x++)
@@ -206,12 +209,12 @@ void MassSpringObject::generateIndices()
         m_indices.push_back(i);
         m_indices.push_back(i + m_gridSize + 1);
         m_indices.push_back(i + 1);
-
-        //generate the texture coordinates for the heightmap
-        m_uvs.push_back(glm::vec2(float(x) * (1.0f / m_gridSize),
-                                  float(m_gridSize - y) * (1.0f / m_gridSize)));
       }
-    ++i;
+
+      //generate the texture coordinates for the heightmap
+      m_uvs.push_back(glm::vec2(float(x) * uvOffset,
+                                float(y) * uvOffset));
+      ++i;
     }
   }
 }
