@@ -6,7 +6,7 @@
 #include <ngl/Texture.h>
 #include <QColorDialog>
 #include <ngl/SimpleIndexVAO.h>
-//#include <random>
+#include <random>
 
 #include "CustomDefs.h"
 
@@ -63,13 +63,17 @@ void NGLScene::initializeGL()
   initShader(shader, "ColourVertex", "ColourFragment", "ColourShader");
   initShader(shader, "TextureVertex", "TextureFragment", "TextureShader");
 
-  //std::random_device rd;
-  //std::mt19937 gen(rd());
-  //std::uniform_real_distribution<int> dis(1.0f,8.0f);
-  //glm::vec3 colour = glm::vec3(dis(gen),dis(gen),dis(gen));
-  int textureNum = 1;
+  // pick a random texture
+  std::random_device rd;
+  std::mt19937 gen(rd());
+  std::uniform_int_distribution<> dis(1,8);
+  int textureNum = dis(gen);
   ngl::Texture texture("textures/texture" + std::to_string(textureNum) + ".png");
   m_textureName=texture.setTextureGL();
+
+  // set the solid texture
+  ngl::Texture solidTexture("textures/ratGrid.png");
+  m_solidTextureName=solidTexture.setTextureGL();
 
   buildVAO();
   ngl::VAOFactory::listCreators();
@@ -91,18 +95,8 @@ void NGLScene::buildVAOData()
     m_vaoData.push_back(m_massSpringObj.getVertices()[ulong(i)].x);
     m_vaoData.push_back(m_massSpringObj.getVertices()[ulong(i)].y);
     m_vaoData.push_back(m_massSpringObj.getVertices()[ulong(i)].z);
-
-    if (m_textured)
-    {
-      m_vaoData.push_back(m_massSpringObj.getUVs()[ulong(i)].x);
-      m_vaoData.push_back(m_massSpringObj.getUVs()[ulong(i)].y);
-    }
-    else
-    {
-      m_vaoData.push_back(m_massSpringObj.getMassPoint(i)->getColour().x);
-      m_vaoData.push_back(m_massSpringObj.getMassPoint(i)->getColour().y);
-      m_vaoData.push_back(m_massSpringObj.getMassPoint(i)->getColour().z);
-    }
+    m_vaoData.push_back(m_massSpringObj.getUVs()[ulong(i)].x);
+    m_vaoData.push_back(m_massSpringObj.getUVs()[ulong(i)].y);
   }
 }
 
@@ -191,20 +185,20 @@ void NGLScene::paintGL()
 
   ngl::ShaderLib *shader=ngl::ShaderLib::instance();
 
-  if (m_textured)
-  {
-    (*shader)["TextureShader"]->use();
-  }
-  else
-  {
-    (*shader)["ColourShader"]->use();
-  }
+  (*shader)["TextureShader"]->use();
 
   ngl::Mat4 MVP= m_project*m_view*m_mouseGlobalTX;
   shader->setUniform("MVP",MVP);
 
   // bind the active texture before drawing
-  glBindTexture(GL_TEXTURE_2D, m_textureName);
+  if (m_textured)
+  {
+    glBindTexture(GL_TEXTURE_2D, m_textureName);
+  }
+  else
+  {
+    glBindTexture(GL_TEXTURE_2D, m_solidTextureName);
+  }
 
   //draw objects
   m_vao=ngl::VAOFactory::createVAO(ngl::simpleIndexVAO,GL_TRIANGLES);
@@ -283,16 +277,8 @@ void NGLScene::setVAOData()
                                                    uint(m_indices.size()),
                                                    &m_indices[0],
                                                    GL_UNSIGNED_SHORT));
-    if (m_textured)
-    {
-      m_vao->setVertexAttributePointer(0,3,GL_FLOAT,sizeof(float) * 5,0);
-      m_vao->setVertexAttributePointer(2,2,GL_FLOAT,sizeof(float) * 5,3);
-    }
-    else
-    {
-      m_vao->setVertexAttributePointer(0,3,GL_FLOAT,sizeof(float) * 6,0);
-      m_vao->setVertexAttributePointer(1,3,GL_FLOAT,sizeof(float) * 6,3);
-    }
+    m_vao->setVertexAttributePointer(0,3,GL_FLOAT,sizeof(float) * 5,0);
+    m_vao->setVertexAttributePointer(2,2,GL_FLOAT,sizeof(float) * 5,3);
     m_vao->setNumIndices(m_indices.size());
 }
 

@@ -112,6 +112,8 @@ private:
   MassSpringObject m_massSpringObj;
   ///The name of the texture
   GLuint m_textureName;
+  ///The name of the solid texture
+  GLuint m_solidTextureName;
   ///A flag for if the texture shader should be used.
   bool m_textured;
   ///The Timer for delta time.
