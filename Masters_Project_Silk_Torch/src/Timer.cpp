@@ -25,9 +25,6 @@ double Timer::timerFinish()
   //get the time taken
   double timeTaken = duration.count();
 
-  //convert into seconds
-  timeTaken = timeTaken * 100.0;
-
   //return the time taken
   return timeTaken;
 }

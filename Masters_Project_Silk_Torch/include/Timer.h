@@ -30,7 +30,7 @@ public:
 
 	/**
   @brief A function to get the results of the timer.
-  @returns The time taken in seconds.
+  @returns The time taken.
 	*/
   double timerFinish();
 

@@ -12,7 +12,7 @@
 
 NGLScene::NGLScene( QWidget *_parent ) : QOpenGLWidget( _parent ), m_projectRunning(false), m_gridSize(10),
   m_massSpringObj(MassSpringObject(m_gridSize)), m_textured(true), m_timer(Timer()), m_dt(0.01f), m_frameRateTime(0.0f),
-  m_frameRate(0)
+  m_frameRate(0), initRun(true)
 {
 
   // set this widget to have the initial keyboard focus
@@ -28,6 +28,9 @@ NGLScene::NGLScene( QWidget *_parent ) : QOpenGLWidget( _parent ), m_projectRunn
 
   //set the number of milliseconds the frame timer should run at
   m_timerMilliseconds = 10;
+
+  //start the timer
+  m_timer.timerStart();
 }
 
 NGLScene::~NGLScene()
@@ -241,9 +244,21 @@ void NGLScene::restartProject()
 }
 
 void NGLScene::timerEvent(QTimerEvent *_event)
-{
-  //start the timer
+{  
+  //stop the timer and get dt
+  m_dt = float(m_timer.timerFinish());
+
+  //restart the timer
   m_timer.timerStart();
+
+  //if the inital run reset the dt
+  if (initRun)
+  {
+    initRun = false;
+    m_dt = 0.01f;
+  }
+
+  //Logging::logI("dt: " + std::to_string(m_dt));
 
   //update the cloth
   m_massSpringObj.update(m_dt);
@@ -255,15 +270,12 @@ void NGLScene::timerEvent(QTimerEvent *_event)
   // Update and redraw
   update();
 
-  //stop the timer
-  m_dt = float(m_timer.timerFinish());
-
   //update the frame rate
   m_frameRateTime += m_dt;
   if (m_frameRateTime > 1.0f)
   {
     m_frameRateTime -= 1.0f;
-    //Logging::logI("FPS: " + std::to_string(m_frameRate));
+    Logging::logI("FPS: " + std::to_string(m_frameRate));
     m_frameRate = 0;
   }
   m_frameRate++;

@@ -124,6 +124,8 @@ private:
   float m_frameRateTime;
   ///The current frame rate.
   int m_frameRate;
+  ///A flag for the initial run
+  bool initRun;
 
 protected:
   /**
