@@ -11,7 +11,8 @@
 #include "CustomDefs.h"
 
 NGLScene::NGLScene( QWidget *_parent ) : QOpenGLWidget( _parent ), m_projectRunning(false), m_gridSize(10),
-  m_massSpringObj(MassSpringObject(m_gridSize)), m_textured(true)
+  m_massSpringObj(MassSpringObject(m_gridSize)), m_textured(true), m_timer(Timer()), m_dt(0.01f), m_frameRateTime(0.0f),
+  m_frameRate(0)
 {
 
   // set this widget to have the initial keyboard focus
@@ -175,6 +176,10 @@ void NGLScene::paintGL()
   m_mouseGlobalTX.m_m[3][1] = m_modelPos.m_y;
   m_mouseGlobalTX.m_m[3][2] = m_modelPos.m_z;
 
+  //enable transparancy
+  glEnable(GL_BLEND);
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
   if(m_wireframe == true)
   {
     glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
@@ -183,10 +188,6 @@ void NGLScene::paintGL()
   {
     glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
   }
-
-  //enable transparancy
-  glEnable(GL_BLEND);
-  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
   ngl::ShaderLib *shader=ngl::ShaderLib::instance();
 
@@ -247,14 +248,11 @@ void NGLScene::restartProject()
 
 void NGLScene::timerEvent(QTimerEvent *_event)
 {
-  //calculate the dt from the frame timer
-  float dt = m_timerMilliseconds / 1000.0f;
-
-  //TMP for testing
-  //dt = 0.5f;
+  //start the timer
+  m_timer.timerStart();
 
   //update the cloth
-  m_massSpringObj.update(dt);
+  m_massSpringObj.update(m_dt);
 
   //recreate the vertex and colour data using the updated cloth
   m_vaoData.resize(0);
@@ -262,6 +260,19 @@ void NGLScene::timerEvent(QTimerEvent *_event)
 
   // Update and redraw
   update();
+
+  //stop the timer
+  m_dt = float(m_timer.timerFinish());
+
+  //update the frame rate
+  m_frameRateTime += m_dt;
+  if (m_frameRateTime > 1.0f)
+  {
+    m_frameRateTime -= 1.0f;
+    //Logging::logI("FPS: " + std::to_string(m_frameRate));
+    m_frameRate = 0;
+  }
+  m_frameRate++;
 }
 
 void NGLScene::setVAOData()

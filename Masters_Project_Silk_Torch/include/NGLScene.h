@@ -16,6 +16,7 @@
 #include "Logging.h"
 #include "WindowParams.h"
 #include "MassSpringObject.h"
+#include "Timer.h"
 
 
 /// @file NGLScene.h
@@ -113,6 +114,14 @@ private:
   GLuint m_textureName;
   ///A flag for if the texture shader should be used.
   bool m_textured;
+  ///The Timer for delta time.
+  Timer m_timer;
+  ///The delta time.
+  float m_dt;
+  ///The time for the frame rate.
+  float m_frameRateTime;
+  ///The current frame rate.
+  int m_frameRate;
 
 protected:
   /**

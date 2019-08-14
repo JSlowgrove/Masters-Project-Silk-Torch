@@ -25,7 +25,8 @@ SOURCES+= $$PWD/src/Logging.cpp \
           $$PWD/src/Constraint.cpp \
           $$PWD/src/MassPoint.cpp \
           $$PWD/src/MassSpringObject.cpp \
-          $$PWD/src/Spring.cpp
+          $$PWD/src/Spring.cpp \
+          $$PWD/src/Timer.cpp
 
 # same for the .h files
 HEADERS+= $$PWD/include/CustomDefs.h \
@@ -37,7 +38,8 @@ HEADERS+= $$PWD/include/CustomDefs.h \
           $$PWD/include/Constraint.h \
           $$PWD/include/MassPoint.h \
           $$PWD/include/MassSpringObject.h \
-          $$PWD/include/Spring.h
+          $$PWD/include/Spring.h \
+          $$PWD/include/Timer.h
 # and add the include dir into the search path for Qt and make
 INCLUDEPATH +=./include
 win32:INCLUDEPATH += $$(SDKs)/glm-0.9.9.3
