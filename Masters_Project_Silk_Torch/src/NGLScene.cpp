@@ -184,6 +184,10 @@ void NGLScene::paintGL()
     glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
   }
 
+  //enable transparancy
+  glEnable(GL_BLEND);
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
   ngl::ShaderLib *shader=ngl::ShaderLib::instance();
 
   if (m_textured)
@@ -247,7 +251,7 @@ void NGLScene::timerEvent(QTimerEvent *_event)
   float dt = m_timerMilliseconds / 1000.0f;
 
   //TMP for testing
-  dt = 0.5f;
+  //dt = 0.5f;
 
   //update the cloth
   m_massSpringObj.update(dt);
