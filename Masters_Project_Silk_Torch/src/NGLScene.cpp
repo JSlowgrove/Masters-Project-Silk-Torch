@@ -12,7 +12,7 @@
 
 NGLScene::NGLScene( QWidget *_parent ) : QOpenGLWidget( _parent ), m_projectRunning(false), m_gridSize(10),
   m_massSpringObj(MassSpringObject(m_gridSize)), m_textured(true), m_timer(Timer()), m_dt(0.01f), m_frameRateTime(0.0f),
-  m_frameRate(0), initRun(true)
+  m_frameRate(0), m_FPS(60), initRun(true)
 {
 
   // set this widget to have the initial keyboard focus
@@ -80,6 +80,11 @@ void NGLScene::initializeGL()
 
   buildVAO();
   ngl::VAOFactory::listCreators();
+
+  // initalise the frame rate text
+  m_frameRateText.reset(new  ngl::Text(QFont("Arial",18)));
+  m_frameRateText->setScreenSize(this->size().width(),this->size().height());
+  m_frameRateText->setColour(1.0,1.0,0.0);
 }
 
 // This virtual function is called whenever the widget has been resized.
@@ -211,6 +216,9 @@ void NGLScene::paintGL()
 
   m_vao->draw();
   m_vao->unbind();
+
+  //draw text
+  m_frameRateText->renderText(10,10,"FPS: " + QString::number(m_FPS));
 }
 
 void NGLScene::toggleWireframe(bool _mode	 )
@@ -275,7 +283,8 @@ void NGLScene::timerEvent(QTimerEvent *_event)
   if (m_frameRateTime > 1.0f)
   {
     m_frameRateTime -= 1.0f;
-    Logging::logI("FPS: " + std::to_string(m_frameRate));
+    //Logging::logI("FPS: " + std::to_string(m_frameRate));
+    m_FPS = m_frameRate;
     m_frameRate = 0;
   }
   m_frameRate++;

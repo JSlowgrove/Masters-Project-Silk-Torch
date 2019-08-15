@@ -10,6 +10,7 @@
 #include <ngl/SimpleVAO.h>
 #include <ngl/VAOFactory.h>
 #include <ngl/ShaderLib.h>
+#include <ngl/Text.h>
 #include <memory>
 
 #include "glm/glm.hpp"
@@ -82,6 +83,8 @@ protected:
   ngl::Mat4 m_project;
   ///The windows params (e.g. mouse, rotations, etc.)
   WinParams m_win;
+  ///Frame rate text
+  std::unique_ptr<ngl::Text> m_frameRateText;
 
 private:
   ///The state of the wireframe mode.
@@ -124,6 +127,8 @@ private:
   float m_frameRateTime;
   ///The current frame rate.
   int m_frameRate;
+  ///The current frame rate.
+  int m_FPS;
   ///A flag for the initial run
   bool initRun;
 
