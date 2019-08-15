@@ -97,10 +97,6 @@ private:
   ngl::Vec3 m_position;
   ///The object to draw.
   int m_selectedObject;
-  ///The std::vector of floats for the VAO.
-  std::vector<float> m_vaoData;
-  ///The std::vector of indices for the VAO
-  std::vector<GLshort> m_indices;
   ///The number of millisseconds for the project timer.
   int m_timerMilliseconds;
   ///The global mouse transformations.
@@ -112,7 +108,7 @@ private:
   ///The size of the massSpringObj grid
   unsigned int m_gridSize;
   ///The mass spring object
-  MassSpringObject m_massSpringObj;
+  std::vector<std::shared_ptr<MassSpringObject>> m_massSpringObjects;
   ///The name of the texture
   GLuint m_textureName;
   ///The name of the solid texture
@@ -171,24 +167,15 @@ private:
 
   /**
   @brief This method is called every time the mouse wheel is moved.
-  @param _event The Qt Event structure.
+  @param[in] _event The Qt Event structure.
   */
   void wheelEvent(QWheelEvent* _event) override;
 
   /**
-  @brief A function to build the point grid VAO data for the mass spring mesh.
-  */
-  void buildVAOData();
-
-  /**
-  @brief A function to build the indices for the mass spring mesh.
-  */
-  void buildIndices();
-
-  /**
   @brief A funciton to set the data to be used by the VAO.
+  @param[in] _massSpringIndex The index of the mass spring.
   */
-  void setVAOData();
+  void setVAOData(unsigned int _massSpringIndex);
 
   /**
   @brief A function to build the VAO.
@@ -203,13 +190,6 @@ private:
   @param[in] _shaderName The name of the shader to initalise.
   */
   void initShader(ngl::ShaderLib* _shader, std::string _vertexShaderName, std::string _fragmentShaderName, std::string _shaderName);
-
-  /**
-  @brief A function to draw lines based on the vertices and indices passed in.
-  @param[in] _lineVertAndColour A reference to the array of vertices and colours to draw.
-  @param[in] _lineIndices A reference to the array of incides to use to draw the lines.
-  */
-  void drawLines(std::vector<glm::vec3> & _lineVertAndColour, std::vector<GLshort> & _lineIndices);
 
   /**
   @brief The frame timer for the simulation.

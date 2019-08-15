@@ -3,6 +3,8 @@
 
 #include <vector>
 #include <memory>
+#include <ngl/SimpleVAO.h>
+#include <ngl/VAOFactory.h>
 #include "glm/glm.hpp"
 
 #include "MassPoint.h"
@@ -64,7 +66,7 @@ public:
   @brief Gets the indices of the MassSpringObject.
   @returns A std::vector of the Indices.
   */
-  std::vector<unsigned int> getIndices();
+  std::vector<GLshort> getIndices();
 
   /**
   @brief Gets the uv's of the MassSpringObject.
@@ -85,6 +87,30 @@ public:
   std::vector<glm::vec3> getNormals();
 
   /**
+  @brief Gets the position of the MassSpringObject.
+  @returns The position of the MassSpringObject.
+  */
+  glm::vec3 getPos();
+
+  /**
+  @brief Sets the position of the MassSpringObject.
+  @param[in] _pos The position of the MassSpringObject.
+  */
+  void setPos(glm::vec3 _pos);
+
+  /**
+  @brief Gets the scale of the MassSpringObject.
+  @returns The scale of the MassSpringObject.
+  */
+  glm::vec3 getScale();
+
+  /**
+  @brief Sets the scale of the MassSpringObject.
+  @param[in] _scale The scale of the MassSpringObject.
+  */
+  void setScale(glm::vec3 _scale);
+
+  /**
   @brief Updates the MassSpringObject.
   @returns _dt The Delta Time.
   */
@@ -101,6 +127,22 @@ public:
   */
   std::vector<std::shared_ptr<Spring>> getSprings();
 
+  /**
+  @brief A function to build the VAO data for the massSpringObject.
+  */
+  void buildVAOData();
+
+  /**
+  @brief A function to rebuild the VAO data for the massSpringObject.
+  */
+  void reBuildVAOData();
+
+  /**
+  @brief Gets the VAO data of the MassSpringObject.
+  @returns A std::vector of floats for the VAO.
+  */
+  std::vector<float> getVAOData();
+
 private:
   ///The array of pointers for the MassPoints.
   std::vector<std::shared_ptr<MassPoint>> m_points;
@@ -109,7 +151,7 @@ private:
   ///The size of the grid of points
   unsigned int m_gridSize;
   ///The indices of the MassSpringObject.
-  std::vector<unsigned int> m_indices;
+  std::vector<GLshort> m_indices;
   ///The uv's of the MassSpringObject.
   std::vector<glm::vec2> m_uvs;
   ///The vertices of the MassSpringObject.
@@ -120,6 +162,12 @@ private:
   float m_impulseTime;
   ///A boolean for if the impulse is active.
   bool m_impulse;
+  ///The position of the MassSpringObject.
+  glm::vec3 m_pos;
+  ///The scale of the MassSpringObject.
+  glm::vec3 m_scale;
+  ///The std::vector of floats for the VAO.
+  std::vector<float> m_vaoData;
 
   /**
   @brief Initialises the MassSpringObject.

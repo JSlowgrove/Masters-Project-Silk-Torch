@@ -11,10 +11,8 @@
 #include "CustomDefs.h"
 
 NGLScene::NGLScene( QWidget *_parent ) : QOpenGLWidget( _parent ), m_projectRunning(false), m_gridSize(10),
-  m_massSpringObj(MassSpringObject(m_gridSize)), m_textured(true), m_timer(Timer()), m_dt(0.01f), m_frameRateTime(0.0f),
-  m_frameRate(0), m_FPS(60), initRun(true)
+  m_textured(true), m_timer(Timer()), m_dt(0.01f), m_frameRateTime(0.0f), m_frameRate(0), m_FPS(60), initRun(true)
 {
-
   // set this widget to have the initial keyboard focus
   setFocus();
   // re-size the widget to that of the parent (in this case the GLFrame passed in on construction)
@@ -25,6 +23,9 @@ NGLScene::NGLScene( QWidget *_parent ) : QOpenGLWidget( _parent ), m_projectRunn
 	m_position=0.0;
 
 	m_selectedObject=0;
+
+  //initalise the initial mass spring object
+  m_massSpringObjects.push_back(std::shared_ptr<MassSpringObject>(new MassSpringObject(m_gridSize)));
 
   //set the number of milliseconds the frame timer should run at
   m_timerMilliseconds = 10;
@@ -63,7 +64,6 @@ void NGLScene::initializeGL()
   // grab an instance of shader manager
   ngl::ShaderLib* shader = ngl::ShaderLib::instance();
   // load a frag and vert shaders
-  initShader(shader, "ColourVertex", "ColourFragment", "ColourShader");
   initShader(shader, "TextureVertex", "TextureFragment", "TextureShader");
 
   // pick a random texture
@@ -96,43 +96,23 @@ void NGLScene::resizeGL( int _w, int _h )
   m_win.height = static_cast<int>( _h * devicePixelRatio() );
 }
 
-void NGLScene::buildVAOData()
-{
-  for (unsigned int i = 0; i < u_int(m_massSpringObj.getVertices().size()); ++i)
-  {
-    m_vaoData.push_back(m_massSpringObj.getVertices()[ulong(i)].x);
-    m_vaoData.push_back(m_massSpringObj.getVertices()[ulong(i)].y);
-    m_vaoData.push_back(m_massSpringObj.getVertices()[ulong(i)].z);
-    m_vaoData.push_back(m_massSpringObj.getUVs()[ulong(i)].x);
-    m_vaoData.push_back(m_massSpringObj.getUVs()[ulong(i)].y);
-  }
-}
-
-void NGLScene::buildIndices()
-{
-  for (auto index : m_massSpringObj.getIndices())
-  {
-    m_indices.push_back(GLshort(index));
-  }
-}
-
 void NGLScene::buildVAO()
 {
   // build the particle grid VAO
-  buildVAOData();
+  for (unsigned int i = 0; i < m_massSpringObjects.size(); ++i)
+  {
+    m_massSpringObjects[i]->buildVAOData();
 
-  // build the indicies
-  buildIndices();
+    // create a vao as a series of GL_TRIANGLES
+    m_vao=ngl::VAOFactory::createVAO(ngl::simpleIndexVAO,GL_TRIANGLES);
+    m_vao->bind();
 
-  // create a vao as a series of GL_TRIANGLES
-  m_vao=ngl::VAOFactory::createVAO(ngl::simpleIndexVAO,GL_TRIANGLES);
-  m_vao->bind();
+    // set the vao data
+    setVAOData(i);
 
-  //set the vao data
-  setVAOData();
-
- // now unbind
-  m_vao->unbind();
+    // now unbind
+    m_vao->unbind();
+  }
 }
 
 void NGLScene::initShader(ngl::ShaderLib* _shader, std::string _vertexShaderName, std::string _fragmentShaderName, std::string _shaderName)
@@ -209,13 +189,18 @@ void NGLScene::paintGL()
   }
 
   //draw objects
-  m_vao=ngl::VAOFactory::createVAO(ngl::simpleIndexVAO,GL_TRIANGLES);
-  m_vao->bind();
 
-  setVAOData();
+  //mass spring
+  for (unsigned int i = 0; i < m_massSpringObjects.size(); ++i)
+  {
+    m_vao=ngl::VAOFactory::createVAO(ngl::simpleIndexVAO,GL_TRIANGLES);
+    m_vao->bind();
 
-  m_vao->draw();
-  m_vao->unbind();
+    setVAOData(i);
+
+    m_vao->draw();
+    m_vao->unbind();
+  }
 
   //draw text
   m_frameRateText->renderText(10,10,"FPS: " + QString::number(m_FPS));
@@ -232,9 +217,11 @@ void NGLScene::toggleTextured(bool _mode)
 {
   Logging::logI("Textured " + Logging::boolToString(_mode));
   m_textured=_mode;
-  //recreate the vertex and colour data using the updated cloth
-  m_vaoData.resize(0);
-  buildVAOData();
+  //recreate the vao data
+  for (auto springObjects : m_massSpringObjects)
+  {
+    springObjects->reBuildVAOData();
+  }
   update();
 }
 
@@ -266,14 +253,15 @@ void NGLScene::timerEvent(QTimerEvent *_event)
     m_dt = 0.01f;
   }
 
-  //Logging::logI("dt: " + std::to_string(m_dt));
+  //mass spring
+  for (auto springObjects : m_massSpringObjects)
+  {
+    //update the mass spring point
+    springObjects->update(m_dt);
 
-  //update the cloth
-  m_massSpringObj.update(m_dt);
-
-  //recreate the vertex and colour data using the updated cloth
-  m_vaoData.resize(0);
-  buildVAOData();
+    //recreate the vao data
+    springObjects->reBuildVAOData();
+  }
 
   // Update and redraw
   update();
@@ -283,40 +271,21 @@ void NGLScene::timerEvent(QTimerEvent *_event)
   if (m_frameRateTime > 1.0f)
   {
     m_frameRateTime -= 1.0f;
-    //Logging::logI("FPS: " + std::to_string(m_frameRate));
     m_FPS = m_frameRate;
     m_frameRate = 0;
   }
   m_frameRate++;
 }
 
-void NGLScene::setVAOData()
+void NGLScene::setVAOData(unsigned int _massSpringIndex)
 {
   //set the data for the vao
-  m_vao->setData(ngl::SimpleIndexVAO::VertexData(m_vaoData.size() * sizeof(float),
-                                                   m_vaoData[0],
-                                                   uint(m_indices.size()),
-                                                   &m_indices[0],
+  m_vao->setData(ngl::SimpleIndexVAO::VertexData(m_massSpringObjects[_massSpringIndex]->getVAOData().size() * sizeof(float),
+                                                   m_massSpringObjects[_massSpringIndex]->getVAOData()[0],
+                                                   uint(m_massSpringObjects[_massSpringIndex]->getIndices().size()),
+                                                   &m_massSpringObjects[_massSpringIndex]->getIndices()[0],
                                                    GL_UNSIGNED_SHORT));
     m_vao->setVertexAttributePointer(0,3,GL_FLOAT,sizeof(float) * 5,0);
     m_vao->setVertexAttributePointer(2,2,GL_FLOAT,sizeof(float) * 5,3);
-    m_vao->setNumIndices(m_indices.size());
-}
-
-void NGLScene::drawLines(std::vector<glm::vec3> & _lineVertAndColour, std::vector<GLshort> & _lineIndices)
-{
-  m_vao=ngl::VAOFactory::createVAO(ngl::simpleIndexVAO,GL_LINES);
-
-  m_vao->bind();
-  m_vao->setData(ngl::SimpleIndexVAO::VertexData(_lineVertAndColour.size() * sizeof(float),
-                                                 _lineVertAndColour[0].x,
-                                                 uint(_lineIndices.size()),
-                                                 &_lineIndices[0],
-                                                 GL_UNSIGNED_SHORT));
-  m_vao->setVertexAttributePointer(0,3,GL_FLOAT,sizeof(glm::vec3) * 2,0);
-  m_vao->setVertexAttributePointer(1,3,GL_FLOAT,sizeof(glm::vec3) * 2,3);
-  m_vao->setNumIndices(_lineVertAndColour.size());
-
-  m_vao->draw();
-  m_vao->unbind();
+    m_vao->setNumIndices(m_massSpringObjects[_massSpringIndex]->getIndices().size());
 }

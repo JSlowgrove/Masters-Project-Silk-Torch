@@ -3,17 +3,19 @@
 #include "Utilities.h"
 #include "Logging.h"
 
-MassSpringObject::MassSpringObject() : m_gridSize(10), m_impulseTime(0.0f), m_impulse(true)
+MassSpringObject::MassSpringObject() : m_gridSize(10), m_impulseTime(0.0f), m_impulse(true), m_pos(glm::vec3(0.0f,0.0f,0.0f)), m_scale(glm::vec3(1.0f,1.0f,1.0f))
 {
   initialiseMassSpringObject(10.0f);
 }
 
-MassSpringObject::MassSpringObject(unsigned int _gridSize) : m_gridSize(_gridSize), m_impulseTime(0.0f), m_impulse(true)
+MassSpringObject::MassSpringObject(unsigned int _gridSize) : m_gridSize(_gridSize), m_impulseTime(0.0f), m_impulse(true), m_pos(glm::vec3(0.0f,0.0f,0.0f)),
+  m_scale(glm::vec3(1.0f,1.0f,1.0f))
 {
   initialiseMassSpringObject(10.0f);
 }
 
-MassSpringObject::MassSpringObject(unsigned int _gridSize, float _mass) : m_gridSize(_gridSize), m_impulseTime(0.0f), m_impulse(true)
+MassSpringObject::MassSpringObject(unsigned int _gridSize, float _mass) : m_gridSize(_gridSize), m_impulseTime(0.0f), m_impulse(true),
+  m_pos(glm::vec3(0.0f,0.0f,0.0f)), m_scale(glm::vec3(1.0f,1.0f,1.0f))
 {
   initialiseMassSpringObject(_mass);
 }
@@ -55,7 +57,7 @@ std::shared_ptr<MassPoint> MassSpringObject::getMassPoint(unsigned int _pointInd
   return m_points[_pointIndex];
 }
 
-std::vector<unsigned int> MassSpringObject::getIndices()
+std::vector<GLshort> MassSpringObject::getIndices()
 {
   return m_indices;
 }
@@ -73,6 +75,26 @@ std::vector<glm::vec3> MassSpringObject::getVertices()
 std::vector<glm::vec3> MassSpringObject::getNormals()
 {
   return m_normals;
+}
+
+glm::vec3 MassSpringObject::getPos()
+{
+  return m_pos;
+}
+
+void MassSpringObject::setPos(glm::vec3 _pos)
+{
+  m_pos = _pos;
+}
+
+glm::vec3 MassSpringObject::getScale()
+{
+  return m_scale;
+}
+
+void MassSpringObject::setScale(glm::vec3 _scale)
+{
+  m_scale = _scale;
 }
 
 void MassSpringObject::update(float _dt)
@@ -173,17 +195,6 @@ void MassSpringObject::generateGrid(float _mass)
     }
   }
 
-  //lock the top two corners
-  //m_points[(m_gridSize * m_gridSize)-1]->lock();
-  //m_points[(m_gridSize * m_gridSize)-(m_gridSize)]->lock();
-
-  //lock top row
-  /*for (unsigned int i = 1; i <= m_gridSize; i++)
-  {
-    m_points[(m_gridSize*m_gridSize)-i]->lock();
-    m_points[(m_gridSize*m_gridSize)-i]->setColour(glm::vec3(1.0f,0.0f,0.0f));
-  }*/
-
   //lock bottom row
   for (unsigned int i = 0; i < m_gridSize; i++)
   {
@@ -210,13 +221,13 @@ void MassSpringObject::generateIndices()
       {
         i = (y * m_gridSize) + x;
         // adds the first triangle of the current square
-        m_indices.push_back(i);
-        m_indices.push_back(i + m_gridSize);
-        m_indices.push_back(i + m_gridSize + 1);
+        m_indices.push_back(GLshort(i));
+        m_indices.push_back(GLshort(i + m_gridSize));
+        m_indices.push_back(GLshort(i + m_gridSize + 1));
         // adds the second triangle of the current square
-        m_indices.push_back(i);
-        m_indices.push_back(i + m_gridSize + 1);
-        m_indices.push_back(i + 1);
+        m_indices.push_back(GLshort(i));
+        m_indices.push_back(GLshort(i + m_gridSize + 1));
+        m_indices.push_back(GLshort(i + 1));
       }
 
       //generate the texture coordinates
@@ -272,6 +283,29 @@ void MassSpringObject::generateSprings()
       m_springs.push_back(spring);
     }
   }
+}
+
+void MassSpringObject::buildVAOData()
+{
+  for (unsigned int i = 0; i < u_int(m_vertices.size()); ++i)
+  {
+    m_vaoData.push_back(m_vertices[ulong(i)].x);
+    m_vaoData.push_back(m_vertices[ulong(i)].y);
+    m_vaoData.push_back(m_vertices[ulong(i)].z);
+    m_vaoData.push_back(m_uvs[ulong(i)].x);
+    m_vaoData.push_back(m_uvs[ulong(i)].y);
+  }
+}
+
+void MassSpringObject::reBuildVAOData()
+{
+  m_vaoData.resize(0);
+  buildVAOData();
+}
+
+std::vector<float> MassSpringObject::getVAOData()
+{
+  return m_vaoData;
 }
 
 void MassSpringObject::generateNormals()
