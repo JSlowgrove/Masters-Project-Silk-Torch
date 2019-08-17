@@ -206,6 +206,7 @@ void NGLScene::paintGL()
   }
 
   //draw text
+  glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
   m_frameRateText->renderText(10,10,"FPS: " + QString::number(m_FPS));
 }
 
