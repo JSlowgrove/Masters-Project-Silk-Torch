@@ -83,8 +83,6 @@ protected:
   ngl::Mat4 m_project;
   ///The windows params (e.g. mouse, rotations, etc.)
   WinParams m_win;
-  ///Frame rate text
-  std::unique_ptr<ngl::Text> m_frameRateText;
 
 private:
   ///The state of the wireframe mode.
@@ -127,6 +125,8 @@ private:
   int m_FPS;
   ///A flag for the initial run
   bool initRun;
+  ///Frame rate text
+  std::unique_ptr<ngl::Text> m_frameRateText;
 
 protected:
   /**

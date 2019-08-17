@@ -23,6 +23,9 @@ int main(int argc, char **argv)
   // now set the depth buffer to 24 bits
   format.setDepthBufferSize(24);
 
+  // disable vsync
+  format.setSwapInterval(0);
+
   // this will set the format for all widgets
   QSurfaceFormat::setDefaultFormat(format);
   // make an instance of the QApplication

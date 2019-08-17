@@ -143,6 +143,30 @@ public:
   */
   std::vector<float> getVAOData();
 
+  /**
+  @brief Sets the amount of time the wind impulse is on.
+  @param[in] _impulseOnTime The amount of time the wind impulse is on.
+  */
+  void setImpulseOnTime(float _impulseOnTime);
+
+  /**
+  @brief Sets the amount of time the wind impulse is off.
+  @param[in] _impulseOffTime The amount of time the wind impulse is off.
+  */
+  void setImpulseOffTime(float _impulseOffTime);
+
+  /**
+  @brief Sets the value of the boyancy of the MassSpringObject.
+  @param[in] _boyancy The boyancy of the MassSpringObject.
+  */
+  void setBoyancy(float _boyancy);
+
+  /**
+  @brief Sets the wind force acting on the MassSpringObject.
+  @param[in] _windForce The wind force acting on the MassSpringObject.
+  */
+  void setWindForce(glm::vec3 _windForce);
+
 private:
   ///The array of pointers for the MassPoints.
   std::vector<std::shared_ptr<MassPoint>> m_points;
@@ -168,6 +192,14 @@ private:
   glm::vec3 m_scale;
   ///The std::vector of floats for the VAO.
   std::vector<float> m_vaoData;
+  ///The amount of time the wind impulse is on.
+  float m_impulseOnTime;
+  ///The amount of time the wind impulse is off.
+  float m_impulseOffTime;
+  ///The boyancy of the MassSpringObject.
+  float m_boyancy;
+  ///The wind force.
+  glm::vec3 m_windForce;
 
   /**
   @brief Initialises the MassSpringObject.

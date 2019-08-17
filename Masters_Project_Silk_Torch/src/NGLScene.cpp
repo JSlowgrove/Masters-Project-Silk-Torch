@@ -11,7 +11,7 @@
 #include "CustomDefs.h"
 
 NGLScene::NGLScene( QWidget *_parent ) : QOpenGLWidget( _parent ), m_projectRunning(false), m_gridSize(10),
-  m_textured(true), m_timer(Timer()), m_dt(0.01f), m_frameRateTime(0.0f), m_frameRate(0), m_FPS(60), initRun(true)
+  m_textured(true), m_timer(Timer()), m_dt(0.01f), m_frameRateTime(0.0f), m_frameRate(0), m_FPS(0), initRun(true)
 {
   // set this widget to have the initial keyboard focus
   setFocus();
@@ -28,9 +28,9 @@ NGLScene::NGLScene( QWidget *_parent ) : QOpenGLWidget( _parent ), m_projectRunn
   m_massSpringObjects.push_back(std::shared_ptr<MassSpringObject>(new MassSpringObject(m_gridSize)));
 
   //set the number of milliseconds the frame timer should run at
-  m_timerMilliseconds = 10;
+  m_timerMilliseconds = 1;
 
-  //start the timer
+  //start the dt timer
   m_timer.timerStart();
 }
 

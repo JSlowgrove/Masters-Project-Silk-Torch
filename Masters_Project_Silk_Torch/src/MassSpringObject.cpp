@@ -3,19 +3,22 @@
 #include "Utilities.h"
 #include "Logging.h"
 
-MassSpringObject::MassSpringObject() : m_gridSize(10), m_impulseTime(0.0f), m_impulse(true), m_pos(glm::vec3(0.0f,0.0f,0.0f)), m_scale(glm::vec3(1.0f,1.0f,1.0f))
+MassSpringObject::MassSpringObject() : m_gridSize(10), m_impulseTime(0.0f), m_impulse(true), m_pos(glm::vec3(0.0f,0.0f,0.0f)),
+  m_scale(glm::vec3(1.0f,1.0f,1.0f)), m_impulseOnTime(1.0f), m_impulseOffTime(5.0f), m_boyancy(10.0f), m_windForce(glm::vec3(0.0f,0.0f,-5.0f))
 {
   initialiseMassSpringObject(10.0f);
 }
 
-MassSpringObject::MassSpringObject(unsigned int _gridSize) : m_gridSize(_gridSize), m_impulseTime(0.0f), m_impulse(true), m_pos(glm::vec3(0.0f,0.0f,0.0f)),
-  m_scale(glm::vec3(1.0f,1.0f,1.0f))
+MassSpringObject::MassSpringObject(unsigned int _gridSize) : m_gridSize(_gridSize), m_impulseTime(0.0f), m_impulse(true),
+  m_pos(glm::vec3(0.0f,0.0f,0.0f)), m_scale(glm::vec3(1.0f,1.0f,1.0f)), m_impulseOnTime(1.0f), m_impulseOffTime(5.0f), m_boyancy(10.0f),
+  m_windForce(glm::vec3(0.0f,0.0f,-5.0f))
 {
   initialiseMassSpringObject(10.0f);
 }
 
 MassSpringObject::MassSpringObject(unsigned int _gridSize, float _mass) : m_gridSize(_gridSize), m_impulseTime(0.0f), m_impulse(true),
-  m_pos(glm::vec3(0.0f,0.0f,0.0f)), m_scale(glm::vec3(1.0f,1.0f,1.0f))
+  m_pos(glm::vec3(0.0f,0.0f,0.0f)), m_scale(glm::vec3(1.0f,1.0f,1.0f)), m_impulseOnTime(1.0f), m_impulseOffTime(5.0f), m_boyancy(10.0f),
+  m_windForce(glm::vec3(0.0f,0.0f,-5.0f))
 {
   initialiseMassSpringObject(_mass);
 }
@@ -103,34 +106,33 @@ void MassSpringObject::update(float _dt)
   m_impulseTime += _dt;
 
   //check if impluse needs to be turned on or off
-  if (m_impulseTime > 1.0f && m_impulse)
+  if (m_impulseTime > m_impulseOnTime && m_impulse)
   {
     //reset impulse time
-    m_impulseTime -= 1.0f;
+    m_impulseTime -= m_impulseOnTime;
     m_impulse = false;
     //Logging::logI("IMPULSE");
   }
-  else if (m_impulseTime > 5.0f && !m_impulse)
+  else if (m_impulseTime > m_impulseOffTime && !m_impulse)
   {
     //reset impulse time
-    m_impulseTime -= 5.0f;
+    m_impulseTime -= m_impulseOffTime;
     m_impulse = true;
     //Logging::logI("IMPULSE");
   }
 
   //apply the external forces to the points and reset the internal forces
-  float boyancy = 10.0f;
   for (auto point : m_points)
   {
     if (m_impulse)
     {
-      point->setExternalForces(glm::vec3(0.0f,0.0f,-10.0f));
+      point->setExternalForces(m_windForce);
     }
     else
     {
       point->setExternalForces(glm::vec3(0.0f,0.0f,0.0f));
     }
-    point->setExternalForces(glm::vec3(point->getExternalForces().x,boyancy,point->getExternalForces().z));
+    point->setExternalForces(glm::vec3(point->getExternalForces().x,m_boyancy,point->getExternalForces().z));
     point->setInternalForces(glm::vec3(0.0f,0.0f,0.0f));
   }
 
@@ -306,6 +308,26 @@ void MassSpringObject::reBuildVAOData()
 std::vector<float> MassSpringObject::getVAOData()
 {
   return m_vaoData;
+}
+
+void MassSpringObject::setImpulseOnTime(float _impulseOnTime)
+{
+  m_impulseOnTime = _impulseOnTime;
+}
+
+void MassSpringObject::setImpulseOffTime(float _impulseOffTime)
+{
+  m_impulseOffTime = _impulseOffTime;
+}
+
+void MassSpringObject::setBoyancy(float _boyancy)
+{
+  m_boyancy = _boyancy;
+}
+
+void MassSpringObject::setWindForce(glm::vec3 _windForce)
+{
+  m_windForce = _windForce;
 }
 
 void MassSpringObject::generateNormals()
