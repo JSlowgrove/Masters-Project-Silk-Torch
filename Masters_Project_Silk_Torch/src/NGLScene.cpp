@@ -227,15 +227,81 @@ void NGLScene::toggleTextured(bool _mode)
 
 void NGLScene::runProject()
 {
-  Logging::logI("Start Project");
-  startTimer(m_timerMilliseconds);
-  m_projectRunning = true;
-  update();
+  if (!m_projectRunning)
+  {
+    Logging::logI("Start Project");
+    startTimer(m_timerMilliseconds);
+    m_projectRunning = true;
+    update();
+  }
+  else
+  {
+    Logging::logI("Project already running!");
+  }
 }
 
 void NGLScene::restartProject()
 {
   Logging::logI("Restart Project");
+  for(auto massSpringObj : m_massSpringObjects)
+  {
+    massSpringObj->reset();
+  }
+  update();
+}
+
+void NGLScene::setBuoyancy(double _buoyancy)
+{
+  for(auto massSpringObj : m_massSpringObjects)
+  {
+    massSpringObj->setBoyancy(float(_buoyancy));
+  }
+  update();
+}
+
+void NGLScene::setWindImpulseOn(double _windImpulseOn)
+{
+  for(auto massSpringObj : m_massSpringObjects)
+  {
+    massSpringObj->setImpulseOnTime(float(_windImpulseOn));
+  }
+  update();
+}
+
+void NGLScene::setWindImpulseOff(double _windImpulseOff)
+{
+  for(auto massSpringObj : m_massSpringObjects)
+  {
+    massSpringObj->setImpulseOffTime(float(_windImpulseOff));
+  }
+  update();
+}
+
+void NGLScene::setWindForceX(double _x)
+{
+  for(auto massSpringObj : m_massSpringObjects)
+  {
+    massSpringObj->setWindForce('x',float(_x));
+  }
+  update();
+}
+
+void NGLScene::setWindForceY(double _y)
+{
+  for(auto massSpringObj : m_massSpringObjects)
+  {
+    massSpringObj->setWindForce('y',float(_y));
+  }
+  update();
+}
+
+void NGLScene::setWindForceZ(double _z)
+{
+  for(auto massSpringObj : m_massSpringObjects)
+  {
+    massSpringObj->setWindForce('z',float(_z));
+  }
+  update();
 }
 
 void NGLScene::timerEvent(QTimerEvent *_event)

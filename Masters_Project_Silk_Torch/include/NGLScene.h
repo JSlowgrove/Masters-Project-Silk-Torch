@@ -74,6 +74,42 @@ public:
     */
     void restartProject();
 
+    /**
+    @brief A slot to set the buoyancy of the MassSpringObjects.
+    @param[in] _mode The value of buoyancy.
+    */
+    void setBuoyancy(double _buoyancy);
+
+    /**
+    @brief A slot to set the wind impulse on time.
+    @param[in] _mode The value of the wind impulse on time.
+    */
+    void setWindImpulseOn(double _windImpulseOn);
+
+    /**
+    @brief A slot to set the wind impulse off time.
+    @param[in] _mode The value of the wind impulse off time.
+    */
+    void setWindImpulseOff(double _windImpulseOff);
+
+    /**
+    @brief A slot to set the force of the wind in the X axis.
+    @param[in] _x The value of the force of the wind in the X axis.
+    */
+    void setWindForceX(double _x);
+
+    /**
+    @brief A slot to set the force of the wind in the Y axis.
+    @param[in] _y The value of the force of the wind in the Y axis.
+    */
+    void setWindForceY(double _y);
+
+    /**
+    @brief A slot to set the force of the wind in the Z axis.
+    @param[in] _z The value of the force of the wind in the Z axis.
+    */
+    void setWindForceZ(double _z);
+
 protected:
   ///The model position.
   ngl::Vec3 m_modelPos;

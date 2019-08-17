@@ -163,9 +163,10 @@ public:
 
   /**
   @brief Sets the wind force acting on the MassSpringObject.
+  @param[in] _axis The axis to set.
   @param[in] _windForce The wind force acting on the MassSpringObject.
   */
-  void setWindForce(glm::vec3 _windForce);
+  void setWindForce(char _axis, float _windForce);
 
 private:
   ///The array of pointers for the MassPoints.

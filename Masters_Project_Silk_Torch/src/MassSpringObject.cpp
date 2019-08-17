@@ -325,9 +325,20 @@ void MassSpringObject::setBoyancy(float _boyancy)
   m_boyancy = _boyancy;
 }
 
-void MassSpringObject::setWindForce(glm::vec3 _windForce)
+void MassSpringObject::setWindForce(char _axis, float _windForce)
 {
-  m_windForce = _windForce;
+  switch(_axis)
+  {
+    case 'x':
+      m_windForce.x = _windForce;
+      break;
+    case 'y':
+      m_windForce.y = _windForce;
+      break;
+    case 'z':
+      m_windForce.z = _windForce;
+      break;
+  }
 }
 
 void MassSpringObject::generateNormals()

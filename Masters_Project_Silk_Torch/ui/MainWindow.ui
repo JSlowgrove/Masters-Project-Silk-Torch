@@ -38,24 +38,8 @@
       </layout>
      </widget>
     </item>
-    <item row="0" column="0" rowspan="3">
-     <spacer name="horizontalSpacer">
-      <property name="orientation">
-       <enum>Qt::Horizontal</enum>
-      </property>
-      <property name="sizeType">
-       <enum>QSizePolicy::Expanding</enum>
-      </property>
-      <property name="sizeHint" stdset="0">
-       <size>
-        <width>720</width>
-        <height>20</height>
-       </size>
-      </property>
-     </spacer>
-    </item>
-    <item row="1" column="1">
-     <widget class="QGroupBox" name="s_drawGB">
+    <item row="3" column="1">
+     <widget class="QGroupBox" name="gb_draw">
       <property name="title">
        <string>Draw</string>
       </property>
@@ -80,18 +64,270 @@
       </layout>
      </widget>
     </item>
-    <item row="2" column="1">
-     <spacer name="verticalSpacer">
+    <item row="1" column="1" rowspan="2">
+     <widget class="QGroupBox" name="gb_forces">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>0</width>
+        <height>300</height>
+       </size>
+      </property>
+      <property name="title">
+       <string>Forces</string>
+      </property>
+      <widget class="QTabWidget" name="tw_forces">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>30</y>
+         <width>321</width>
+         <height>261</height>
+        </rect>
+       </property>
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="MinimumExpanding">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="currentIndex">
+        <number>0</number>
+       </property>
+       <widget class="QWidget" name="t_external">
+        <attribute name="title">
+         <string>External</string>
+        </attribute>
+        <widget class="QDoubleSpinBox" name="m_buoyancy">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>30</y>
+           <width>72</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="value">
+          <double>5.000000000000000</double>
+         </property>
+        </widget>
+        <widget class="QLabel" name="l_buoyancy">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>10</y>
+           <width>111</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Flame Buoyancy</string>
+         </property>
+        </widget>
+        <widget class="QDoubleSpinBox" name="m_windImpulseOn">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>100</y>
+           <width>72</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="value">
+          <double>1.000000000000000</double>
+         </property>
+        </widget>
+        <widget class="QLabel" name="l_windImpulseOn">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>80</y>
+           <width>131</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Wind Impulse (On)</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="l_seconds">
+         <property name="geometry">
+          <rect>
+           <x>90</x>
+           <y>110</y>
+           <width>62</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Seconds</string>
+         </property>
+        </widget>
+        <widget class="QDoubleSpinBox" name="m_windImpulseOff">
+         <property name="geometry">
+          <rect>
+           <x>170</x>
+           <y>100</y>
+           <width>72</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="value">
+          <double>5.000000000000000</double>
+         </property>
+        </widget>
+        <widget class="QLabel" name="l_seconds_2">
+         <property name="geometry">
+          <rect>
+           <x>250</x>
+           <y>110</y>
+           <width>62</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Seconds</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="l_windImpulseOff">
+         <property name="geometry">
+          <rect>
+           <x>170</x>
+           <y>80</y>
+           <width>131</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Wind Impulse (Off)</string>
+         </property>
+        </widget>
+        <widget class="QDoubleSpinBox" name="m_windForceX">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>170</y>
+           <width>72</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="value">
+          <double>0.000000000000000</double>
+         </property>
+        </widget>
+        <widget class="QLabel" name="l_windForce">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>150</y>
+           <width>101</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Wind Force</string>
+         </property>
+        </widget>
+        <widget class="QDoubleSpinBox" name="m_windForceY">
+         <property name="geometry">
+          <rect>
+           <x>120</x>
+           <y>170</y>
+           <width>72</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="value">
+          <double>0.000000000000000</double>
+         </property>
+        </widget>
+        <widget class="QDoubleSpinBox" name="m_windForceZ">
+         <property name="geometry">
+          <rect>
+           <x>220</x>
+           <y>170</y>
+           <width>72</width>
+           <height>29</height>
+          </rect>
+         </property>
+         <property name="minimum">
+          <double>-99.989999999999995</double>
+         </property>
+         <property name="value">
+          <double>-5.000000000000000</double>
+         </property>
+        </widget>
+        <widget class="QLabel" name="l_x">
+         <property name="geometry">
+          <rect>
+           <x>90</x>
+           <y>180</y>
+           <width>21</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>X</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="l_y">
+         <property name="geometry">
+          <rect>
+           <x>200</x>
+           <y>180</y>
+           <width>21</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Y</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="l_z">
+         <property name="geometry">
+          <rect>
+           <x>300</x>
+           <y>180</y>
+           <width>21</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Z</string>
+         </property>
+        </widget>
+       </widget>
+       <widget class="QWidget" name="t_internal">
+        <attribute name="title">
+         <string>Internal</string>
+        </attribute>
+       </widget>
+      </widget>
+     </widget>
+    </item>
+    <item row="0" column="0" rowspan="4">
+     <spacer name="horizontalSpacer">
       <property name="orientation">
-       <enum>Qt::Vertical</enum>
+       <enum>Qt::Horizontal</enum>
       </property>
       <property name="sizeType">
-       <enum>QSizePolicy::Minimum</enum>
+       <enum>QSizePolicy::Fixed</enum>
       </property>
       <property name="sizeHint" stdset="0">
        <size>
-        <width>20</width>
-        <height>64</height>
+        <width>702</width>
+        <height>20</height>
        </size>
       </property>
      </spacer>
