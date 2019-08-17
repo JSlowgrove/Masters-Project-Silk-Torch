@@ -198,6 +198,9 @@ void NGLScene::paintGL()
 
     setVAOData(i);
 
+    ngl::Mat4 transform = m_massSpringObjects[i]->getTransform();
+    shader->setUniform("transform",transform);
+
     m_vao->draw();
     m_vao->unbind();
   }

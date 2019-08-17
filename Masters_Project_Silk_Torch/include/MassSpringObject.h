@@ -192,6 +192,12 @@ public:
   */
   void setRestLength(float _restLength);
 
+  /**
+  @brief Gets the transformation matrix of the MassSpringObject.
+  @returns The transformation matrix.
+  */
+  glm::mat4 getTransform();
+
 private:
   ///The array of pointers for the MassPoints.
   std::vector<std::shared_ptr<MassPoint>> m_points;
@@ -231,6 +237,8 @@ private:
   float m_damp;
   ///The rest length of the springs.
   float m_restLength;
+  ///The transformation matrix of the MassSpringObject.
+  glm::mat4 m_transform;
 
   /**
   @brief Initialises the MassSpringObject.
@@ -267,6 +275,11 @@ private:
   @brief Generate the normals for the MassSpringObject.
   */
   void generateNormals();
+
+  /**
+  @brief Generate the transformation matrix for the MassSpringObject.
+  */
+  void generateTransform();
 
   /**
   @brief A function to get a normal from 3 vectors.

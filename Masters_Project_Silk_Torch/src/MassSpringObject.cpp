@@ -2,6 +2,7 @@
 #include "CustomDefs.h"
 #include "Utilities.h"
 #include "Logging.h"
+#include "glm/gtc/matrix_transform.hpp"
 
 MassSpringObject::MassSpringObject() : m_gridSize(10), m_impulseTime(0.0f), m_impulse(true), m_pos(glm::vec3(0.0f,0.0f,0.0f)),
   m_scale(glm::vec3(1.0f,1.0f,1.0f)), m_impulseOnTime(1.0f), m_impulseOffTime(5.0f), m_boyancy(10.0f), m_windForce(glm::vec3(0.0f,0.0f,-5.0f)),
@@ -40,6 +41,9 @@ void MassSpringObject::initialiseMassSpringObject(float _mass)
 
   // generate the normals
   generateNormals();
+
+  // generate the transformation matrix
+  generateTransform();
 }
 
 MassSpringObject::~MassSpringObject()
@@ -150,6 +154,9 @@ void MassSpringObject::update(float _dt)
 
   //update the vertices of the MassSpringObject
   updateVertices();
+
+  // generate the transformation matrix
+  generateTransform();
 }
 
 void MassSpringObject::reset()
@@ -374,6 +381,11 @@ void MassSpringObject::setRestLength(float _restLength)
   }
 }
 
+glm::mat4 MassSpringObject::getTransform()
+{
+  return m_transform;
+}
+
 void MassSpringObject::generateNormals()
 {
   //create the normals for all of the triangles
@@ -394,6 +406,15 @@ void MassSpringObject::generateNormals()
       m_normals.push_back(norm);
     }
   }
+}
+
+void MassSpringObject::generateTransform()
+{
+  //translate an identity matrix
+  m_transform = glm::translate(glm::mat4(1.0f), m_pos);
+
+  //scale the matrix
+  m_transform = glm::scale(m_transform, m_scale);
 }
 
 glm::vec3 MassSpringObject::getNormal(glm::vec3 _a, glm::vec3 _b, glm::vec3 _c)
