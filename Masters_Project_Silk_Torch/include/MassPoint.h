@@ -162,6 +162,11 @@ public:
   void addSpringInfo(unsigned int _id, char _type, char _plane,
                      std::shared_ptr<glm::vec3> _springForce,
                      float _damping);
+  /**
+  @brief Sets the damping of the attached springs.
+  @param[in] _damping The new damping value.
+  */
+  void setDamping(float _damping);
 
 private:
   ///A structure for the spring data

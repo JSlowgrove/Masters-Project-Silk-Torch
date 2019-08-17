@@ -49,6 +49,8 @@ void MassPoint::update(float _dt)
 void MassPoint::setMass(float _mass)
 {
   m_mass = _mass;
+
+  //Logging::logI("setMass");
 }
 
 float MassPoint::getMass()
@@ -203,4 +205,13 @@ void MassPoint::addSpringInfo(unsigned int _id, char _type, char _plane,
   springInfo.m_springForce = _springForce;
   springInfo.m_damping = _damping;
   m_springInfo.push_back(springInfo);
+}
+
+void MassPoint::setDamping(float _damping)
+{
+  for (auto spring : m_springInfo)
+  {
+    spring.m_damping = _damping;
+    //Logging::logI("setDamp");
+  }
 }

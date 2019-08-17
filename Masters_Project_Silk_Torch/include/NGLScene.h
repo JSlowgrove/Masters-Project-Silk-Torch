@@ -110,6 +110,30 @@ public:
     */
     void setWindForceZ(double _z);
 
+    /**
+    @brief A slot to set the mass of the MassSpringObject MassPoints.
+    @param[in] _z The value of the mass.
+    */
+    void setMass(double _mass);
+
+    /**
+    @brief A slot to set the spring constant of the MassPointObject Springs.
+    @param[in] _z The value of the spring constant.
+    */
+    void setSpringConstant(double _springConstant);
+
+    /**
+    @brief A slot to set the damping force of the MassSpringObject.
+    @param[in] _z The value of the damping force.
+    */
+    void setDamping(double _damping);
+
+    /**
+    @brief A slot to set the rest length of the MassPointObject Springs.
+    @param[in] _z The value of the rest length.
+    */
+    void setRestLength(double _restLength);
+
 protected:
   ///The model position.
   ngl::Vec3 m_modelPos;

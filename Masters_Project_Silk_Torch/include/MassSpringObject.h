@@ -168,6 +168,30 @@ public:
   */
   void setWindForce(char _axis, float _windForce);
 
+  /**
+  @brief Sets the mass of the MassPoints.
+  @param[in] _mass The mass of the MassPoints.
+  */
+  void setMass(float _mass);
+
+  /**
+  @brief Sets the constant of the Springs.
+  @param[in] _springConstant The spring constant.
+  */
+  void setSpringConstant(float _springConstant);
+
+  /**
+  @brief Sets the damping of the MassSpringObject.
+  @param[in] _damping The damping of the MassSpringObject.
+  */
+  void setDamping(float _damping);
+
+  /**
+  @brief Sets the rest length of the Springs.
+  @param[in] _restLength The spring rest length.
+  */
+  void setRestLength(float _restLength);
+
 private:
   ///The array of pointers for the MassPoints.
   std::vector<std::shared_ptr<MassPoint>> m_points;
@@ -201,6 +225,12 @@ private:
   float m_boyancy;
   ///The wind force.
   glm::vec3 m_windForce;
+  ///The spring constant of the springs.
+  float m_k;
+  ///The damping of the MassSpringObject.
+  float m_damp;
+  ///The rest length of the springs.
+  float m_restLength;
 
   /**
   @brief Initialises the MassSpringObject.

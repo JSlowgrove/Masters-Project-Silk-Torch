@@ -4,21 +4,22 @@
 #include "Logging.h"
 
 MassSpringObject::MassSpringObject() : m_gridSize(10), m_impulseTime(0.0f), m_impulse(true), m_pos(glm::vec3(0.0f,0.0f,0.0f)),
-  m_scale(glm::vec3(1.0f,1.0f,1.0f)), m_impulseOnTime(1.0f), m_impulseOffTime(5.0f), m_boyancy(10.0f), m_windForce(glm::vec3(0.0f,0.0f,-5.0f))
+  m_scale(glm::vec3(1.0f,1.0f,1.0f)), m_impulseOnTime(1.0f), m_impulseOffTime(5.0f), m_boyancy(10.0f), m_windForce(glm::vec3(0.0f,0.0f,-5.0f)),
+  m_k(100.0f), m_damp(0.1f), m_restLength(1.0f)
 {
   initialiseMassSpringObject(10.0f);
 }
 
 MassSpringObject::MassSpringObject(unsigned int _gridSize) : m_gridSize(_gridSize), m_impulseTime(0.0f), m_impulse(true),
   m_pos(glm::vec3(0.0f,0.0f,0.0f)), m_scale(glm::vec3(1.0f,1.0f,1.0f)), m_impulseOnTime(1.0f), m_impulseOffTime(5.0f), m_boyancy(10.0f),
-  m_windForce(glm::vec3(0.0f,0.0f,-5.0f))
+  m_windForce(glm::vec3(0.0f,0.0f,-5.0f)), m_k(100.0f), m_damp(0.1f), m_restLength(1.0f)
 {
   initialiseMassSpringObject(10.0f);
 }
 
 MassSpringObject::MassSpringObject(unsigned int _gridSize, float _mass) : m_gridSize(_gridSize), m_impulseTime(0.0f), m_impulse(true),
   m_pos(glm::vec3(0.0f,0.0f,0.0f)), m_scale(glm::vec3(1.0f,1.0f,1.0f)), m_impulseOnTime(1.0f), m_impulseOffTime(5.0f), m_boyancy(10.0f),
-  m_windForce(glm::vec3(0.0f,0.0f,-5.0f))
+  m_windForce(glm::vec3(0.0f,0.0f,-5.0f)), m_k(100.0f), m_damp(0.1f), m_restLength(1.0f)
 {
   initialiseMassSpringObject(_mass);
 }
@@ -258,16 +259,13 @@ void MassSpringObject::updateVertices()
 
 void MassSpringObject::generateSprings()
 {
-  float k = 100.0f;
-  float damp = 0.1f;
-  float restLength = 1.0f;
   for (unsigned int i = 0; i < m_points.size(); ++i)
   {
     //check if not on right side of the mass spring object
     if (i % m_gridSize != 0)
     {
       //hoizontal Spring
-      std::shared_ptr<Spring> spring(new Spring(k, damp, restLength, i));
+      std::shared_ptr<Spring> spring(new Spring(m_k, m_damp, m_restLength, i));
       spring->setPlane('H');
       spring->setPointA(m_points[i]);
       spring->setPointB(m_points[i - 1]);
@@ -278,7 +276,7 @@ void MassSpringObject::generateSprings()
     if (i < m_points.size() - m_gridSize)
     {
       //vertical Spring
-      std::shared_ptr<Spring> spring(new Spring(k, damp, restLength, i));
+      std::shared_ptr<Spring> spring(new Spring(m_k, m_damp, m_restLength, i));
       spring->setPlane('V');
       spring->setPointA(m_points[i + m_gridSize]);
       spring->setPointB(m_points[i]);
@@ -338,6 +336,41 @@ void MassSpringObject::setWindForce(char _axis, float _windForce)
     case 'z':
       m_windForce.z = _windForce;
       break;
+  }
+}
+
+void MassSpringObject::setMass(float _mass)
+{
+  for (auto massPoint : m_points)
+  {
+    massPoint->setMass(_mass);
+  }
+}
+
+void MassSpringObject::setSpringConstant(float _springConstant)
+{
+  m_k = _springConstant;
+  for (auto spring : m_springs)
+  {
+    spring->setSpringConstant(_springConstant);
+  }
+}
+
+void MassSpringObject::setDamping(float _damping)
+{
+  m_damp = _damping;
+  for (auto spring : m_springs)
+  {
+    spring->setDamping(_damping);
+  }
+}
+
+void MassSpringObject::setRestLength(float _restLength)
+{
+  m_restLength = _restLength;
+  for (auto spring : m_springs)
+  {
+    spring->setRestLength(_restLength);
   }
 }
 

@@ -19,6 +19,11 @@ MainWindow::MainWindow(QWidget *parent) :QMainWindow(parent), m_ui(new Ui::MainW
   connect(m_ui->m_windForceX,SIGNAL(valueChanged(double)),m_gl,SLOT(setWindForceX(double)));
   connect(m_ui->m_windForceY,SIGNAL(valueChanged(double)),m_gl,SLOT(setWindForceY(double)));
   connect(m_ui->m_windForceZ,SIGNAL(valueChanged(double)),m_gl,SLOT(setWindForceZ(double)));
+  //set internal forces
+  connect(m_ui->m_mass,SIGNAL(valueChanged(double)),m_gl,SLOT(setMass(double)));
+  connect(m_ui->m_springConstant,SIGNAL(valueChanged(double)),m_gl,SLOT(setSpringConstant(double)));
+  connect(m_ui->m_damping,SIGNAL(valueChanged(double)),m_gl,SLOT(setDamping(double)));
+  connect(m_ui->m_restLength,SIGNAL(valueChanged(double)),m_gl,SLOT(setRestLength(double)));
 }
 
 MainWindow::~MainWindow()

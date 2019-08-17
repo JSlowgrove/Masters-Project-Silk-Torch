@@ -304,6 +304,38 @@ void NGLScene::setWindForceZ(double _z)
   update();
 }
 
+void NGLScene::setMass(double _mass)
+{
+  for(auto massSpringObj : m_massSpringObjects)
+  {
+    massSpringObj->setMass(float(_mass));
+  }
+}
+
+void NGLScene::setSpringConstant(double _springConstant)
+{
+  for(auto massSpringObj : m_massSpringObjects)
+  {
+    massSpringObj->setSpringConstant(float(_springConstant));
+  }
+}
+
+void NGLScene::setDamping(double _damping)
+{
+  for(auto massSpringObj : m_massSpringObjects)
+  {
+    massSpringObj->setDamping(float(_damping));
+  }
+}
+
+void NGLScene::setRestLength(double _restLength)
+{
+  for(auto massSpringObj : m_massSpringObjects)
+  {
+    massSpringObj->setRestLength(float(_restLength));
+  }
+}
+
 void NGLScene::timerEvent(QTimerEvent *_event)
 {  
   //stop the timer and get dt

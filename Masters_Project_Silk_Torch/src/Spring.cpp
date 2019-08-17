@@ -35,6 +35,8 @@ float Spring::getSpringConstant()
 void Spring::setSpringConstant(float _springConstant)
 {
   m_springConstant = _springConstant;
+
+  //Logging::logI("setSpringConst");
 }
 
 float Spring::getDamping()
@@ -45,6 +47,8 @@ float Spring::getDamping()
 void Spring::setDamping(float _damping)
 {
   m_damping = _damping;
+  m_pointA->setDamping(_damping);
+  m_pointB->setDamping(_damping);
 }
 
 unsigned int Spring::getId()
@@ -106,6 +110,8 @@ float Spring::getRestLength()
 void Spring::setRestLength(float _restLength)
 {
   m_restLength = _restLength;
+
+  //Logging::logI("setRestLength");
 }
 
 
