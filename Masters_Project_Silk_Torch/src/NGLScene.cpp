@@ -117,15 +117,15 @@ void NGLScene::buildVAO()
 
 void NGLScene::initShader(ngl::ShaderLib* _shader, std::string _vertexShaderName, std::string _fragmentShaderName, std::string _shaderName)
 {
-  std::string PWD = std::getenv("PWD");
+  //std::string PWD = std::getenv("PWD");
 
   _shader->createShaderProgram(_shaderName);
 
   _shader->attachShader(_vertexShaderName,ngl::ShaderType::VERTEX);
   _shader->attachShader(_fragmentShaderName,ngl::ShaderType::FRAGMENT);
 
-  _shader->loadShaderSource(_vertexShaderName, PWD + "/Masters_Project_Silk_Torch/shaders/" + _vertexShaderName + ".glsl");
-  _shader->loadShaderSource(_fragmentShaderName, PWD + "/Masters_Project_Silk_Torch/shaders/" + _fragmentShaderName + ".glsl");
+  _shader->loadShaderSource(_vertexShaderName, "shaders/" + _vertexShaderName + ".glsl");
+  _shader->loadShaderSource(_fragmentShaderName, "shaders/" + _fragmentShaderName + ".glsl");
 
   _shader->compileShader(_vertexShaderName);
   _shader->compileShader(_fragmentShaderName);
