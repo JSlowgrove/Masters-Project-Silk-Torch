@@ -12,6 +12,7 @@ MainWindow::MainWindow(QWidget *parent) :QMainWindow(parent), m_ui(new Ui::MainW
   connect(m_ui->m_textured,SIGNAL(toggled(bool)),m_gl,SLOT(toggleTextured(bool)));
   connect(m_ui->m_runProject,SIGNAL(clicked()),m_gl,SLOT(runProject()));
   connect(m_ui->m_restartProject,SIGNAL(clicked()),m_gl,SLOT(restartProject()));
+  connect(m_ui->m_numOfObjects,SIGNAL(currentIndexChanged(int)),m_gl,SLOT(setNumOfObject(int)));
   //set external forces
   connect(m_ui->m_buoyancy,SIGNAL(valueChanged(double)),m_gl,SLOT(setBuoyancy(double)));
   connect(m_ui->m_windImpulseOn,SIGNAL(valueChanged(double)),m_gl,SLOT(setWindImpulseOn(double)));

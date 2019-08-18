@@ -134,6 +134,12 @@ public:
     */
     void setRestLength(double _restLength);
 
+    /**
+    @brief A slot to set the number of MassPointObjects.
+    @param[in] _z The value of the number of MassPointObjects.
+    */
+    void setNumOfObject(int _numOfObjects);
+
 protected:
   ///The model position.
   ngl::Vec3 m_modelPos;
@@ -243,6 +249,12 @@ private:
   @brief A function to build the VAO.
   */
   void buildVAO();
+
+  /**
+  @brief A function to generate the mass spring objects.
+  @param[in] The number mass spring objects.
+  */
+  void generateMassSpringObjects(int _numOfObjects);
 
   /**
   @brief A function to initalise a shader.

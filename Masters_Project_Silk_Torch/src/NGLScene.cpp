@@ -24,47 +24,8 @@ NGLScene::NGLScene( QWidget *_parent ) : QOpenGLWidget( _parent ), m_projectRunn
 
 	m_selectedObject=0;
 
-  //the number of mass spring objects.
-  //has to be a perfect square
-  //e.g 1,4,9,16,25,36,49,64,81,100...
-  m_numMassSpringObjects = 100;
-  //calculate the square root of the number of mass spring objects
-  float sqrtNum = std::sqrt(float(m_numMassSpringObjects));
-  //calculate the scale of the massSpringObjects
-  m_MSOScale = 1.0f/sqrtNum;
-
-  //generate the mass spring objects
-  for (int i = 0; i < m_numMassSpringObjects; i++)
-  {
-    //initalise the initial mass spring object
-    m_massSpringObjects.push_back(std::shared_ptr<MassSpringObject>(new MassSpringObject(m_gridSize)));
-    m_massSpringObjects.back()->setScale(glm::vec3(m_MSOScale, m_MSOScale, m_MSOScale));
-
-    // pick a random texture
-    std::random_device rd;
-    std::mt19937 gen(rd());
-    std::uniform_int_distribution<> dis(0,7);
-    int textureNum = dis(gen);
-    m_massSpringObjects.back()->setTextureNum(textureNum);
-  }
-
-  if (m_numMassSpringObjects > 1)
-  {
-    //move the mass spring objects
-    unsigned long i = 0;
-    float gapWidth = (m_gridSize-1.0f) * m_MSOScale;
-    float coordTranslation = gapWidth * (sqrtNum * 0.5f) - (gapWidth*0.5f);
-    for (float y = 0; y < sqrtNum; y++)
-    {
-      float currentY = gapWidth * y;
-      for (float x = 0; x < sqrtNum; x++)
-      {
-        float currentX = gapWidth * x;
-        m_massSpringObjects[i]->setPos(glm::vec3(currentX - coordTranslation,currentY - coordTranslation,0.0f));
-        i++;
-      }
-    }
-  }
+  //generate the MassSpringObjects
+  generateMassSpringObjects(1);
 
   //set the number of milliseconds the frame timer should run at
   m_timerMilliseconds = 1;
@@ -153,6 +114,51 @@ void NGLScene::buildVAO()
 
     // now unbind
     m_vao->unbind();
+  }
+}
+
+void NGLScene::generateMassSpringObjects(int _numOfObjects)
+{
+  //the number of mass spring objects.
+  //has to be a perfect square
+  //e.g 1,4,9,16,25,36,49,64,81,100,121,144...
+  m_numMassSpringObjects = (_numOfObjects + 1) * (_numOfObjects + 1);
+  //calculate the square root of the number of mass spring objects
+  float sqrtNum = std::sqrt(float(m_numMassSpringObjects));
+  //calculate the scale of the massSpringObjects
+  m_MSOScale = 1.0f/sqrtNum;
+
+  //generate the mass spring objects
+  for (int i = 0; i < m_numMassSpringObjects; i++)
+  {
+    //initalise the initial mass spring object
+    m_massSpringObjects.push_back(std::shared_ptr<MassSpringObject>(new MassSpringObject(m_gridSize)));
+    m_massSpringObjects.back()->setScale(glm::vec3(m_MSOScale, m_MSOScale, m_MSOScale));
+
+    // pick a random texture
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<> dis(0,7);
+    int textureNum = dis(gen);
+    m_massSpringObjects.back()->setTextureNum(textureNum);
+  }
+
+  if (m_numMassSpringObjects > 1)
+  {
+    //move the mass spring objects
+    unsigned long i = 0;
+    float gapWidth = (m_gridSize-1.0f) * m_MSOScale;
+    float coordTranslation = gapWidth * (sqrtNum * 0.5f) - (gapWidth*0.5f);
+    for (float y = 0; y < sqrtNum; y++)
+    {
+      float currentY = gapWidth * y;
+      for (float x = 0; x < sqrtNum; x++)
+      {
+        float currentX = gapWidth * x;
+        m_massSpringObjects[i]->setPos(glm::vec3(currentX - coordTranslation,currentY - coordTranslation,0.0f));
+        i++;
+      }
+    }
   }
 }
 
@@ -379,6 +385,28 @@ void NGLScene::setRestLength(double _restLength)
   {
     massSpringObj->setRestLength(float(_restLength));
   }
+}
+
+void NGLScene::setNumOfObject(int _numOfObjects)
+{
+  //empty the MassSpringObjects vector
+  m_massSpringObjects.resize(0);
+
+  //generate the MassSpringObjects
+  generateMassSpringObjects(_numOfObjects);
+
+  //check if before the run button has been pressed
+  if (initRun)
+  {
+    //recreate the vao data
+    for (auto springObjects : m_massSpringObjects)
+    {
+      //update the mass spring point
+      springObjects->update(m_dt);
+      springObjects->reBuildVAOData();
+    }
+  }
+  update();
 }
 
 void NGLScene::timerEvent(QTimerEvent *_event)
