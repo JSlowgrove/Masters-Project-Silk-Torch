@@ -198,6 +198,18 @@ public:
   */
   glm::mat4 getTransform();
 
+  /**
+  @brief Sets the texture number of the MassPointObject.
+  @param[in] _textureNum The new texture num.
+  */
+  void setTextureNum(int _textureNum);
+
+  /**
+  @brief Gets the texture number of the MassPointObject.
+  @returns The texture number of the MassPointObject.
+  */
+  int getTextureNum();
+
 private:
   ///The array of pointers for the MassPoints.
   std::vector<std::shared_ptr<MassPoint>> m_points;
@@ -239,6 +251,8 @@ private:
   float m_restLength;
   ///The transformation matrix of the MassSpringObject.
   glm::mat4 m_transform;
+  ///The texture num.
+  int m_textureNum;
 
   /**
   @brief Initialises the MassSpringObject.

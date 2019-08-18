@@ -6,21 +6,21 @@
 
 MassSpringObject::MassSpringObject() : m_gridSize(10), m_impulseTime(0.0f), m_impulse(true), m_pos(glm::vec3(0.0f,0.0f,0.0f)),
   m_scale(glm::vec3(1.0f,1.0f,1.0f)), m_impulseOnTime(1.0f), m_impulseOffTime(5.0f), m_boyancy(10.0f), m_windForce(glm::vec3(0.0f,0.0f,-5.0f)),
-  m_k(100.0f), m_damp(0.1f), m_restLength(1.0f)
+  m_k(100.0f), m_damp(0.1f), m_restLength(1.0f), m_textureNum(0)
 {
   initialiseMassSpringObject(10.0f);
 }
 
 MassSpringObject::MassSpringObject(unsigned int _gridSize) : m_gridSize(_gridSize), m_impulseTime(0.0f), m_impulse(true),
   m_pos(glm::vec3(0.0f,0.0f,0.0f)), m_scale(glm::vec3(1.0f,1.0f,1.0f)), m_impulseOnTime(1.0f), m_impulseOffTime(5.0f), m_boyancy(10.0f),
-  m_windForce(glm::vec3(0.0f,0.0f,-5.0f)), m_k(100.0f), m_damp(0.1f), m_restLength(1.0f)
+  m_windForce(glm::vec3(0.0f,0.0f,-5.0f)), m_k(100.0f), m_damp(0.1f), m_restLength(1.0f), m_textureNum(0)
 {
   initialiseMassSpringObject(10.0f);
 }
 
 MassSpringObject::MassSpringObject(unsigned int _gridSize, float _mass) : m_gridSize(_gridSize), m_impulseTime(0.0f), m_impulse(true),
   m_pos(glm::vec3(0.0f,0.0f,0.0f)), m_scale(glm::vec3(1.0f,1.0f,1.0f)), m_impulseOnTime(1.0f), m_impulseOffTime(5.0f), m_boyancy(10.0f),
-  m_windForce(glm::vec3(0.0f,0.0f,-5.0f)), m_k(100.0f), m_damp(0.1f), m_restLength(1.0f)
+  m_windForce(glm::vec3(0.0f,0.0f,-5.0f)), m_k(100.0f), m_damp(0.1f), m_restLength(1.0f), m_textureNum(0)
 {
   initialiseMassSpringObject(_mass);
 }
@@ -384,6 +384,16 @@ void MassSpringObject::setRestLength(float _restLength)
 glm::mat4 MassSpringObject::getTransform()
 {
   return m_transform;
+}
+
+void MassSpringObject::setTextureNum(int _textureNum)
+{
+  m_textureNum = _textureNum;
+}
+
+int MassSpringObject::getTextureNum()
+{
+  return m_textureNum;
 }
 
 void MassSpringObject::generateNormals()

@@ -168,9 +168,7 @@ private:
   ///The mass spring object
   std::vector<std::shared_ptr<MassSpringObject>> m_massSpringObjects;
   ///The name of the texture
-  GLuint m_textureName;
-  ///The name of the solid texture
-  GLuint m_solidTextureName;
+  GLuint m_textureName[9];
   ///A flag for if the texture shader should be used.
   bool m_textured;
   ///The Timer for delta time.
@@ -187,6 +185,10 @@ private:
   bool initRun;
   ///Frame rate text
   std::unique_ptr<ngl::Text> m_frameRateText;
+  ///Number of mass spring objects
+  int m_numMassSpringObjects;
+  ///The scale of the mass spring objects
+  float m_MSOScale;
 
 protected:
   /**

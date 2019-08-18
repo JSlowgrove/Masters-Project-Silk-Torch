@@ -24,8 +24,47 @@ NGLScene::NGLScene( QWidget *_parent ) : QOpenGLWidget( _parent ), m_projectRunn
 
 	m_selectedObject=0;
 
-  //initalise the initial mass spring object
-  m_massSpringObjects.push_back(std::shared_ptr<MassSpringObject>(new MassSpringObject(m_gridSize)));
+  //the number of mass spring objects.
+  //has to be a perfect square
+  //e.g 1,4,9,16,25,36,49,64,81,100...
+  m_numMassSpringObjects = 100;
+  //calculate the square root of the number of mass spring objects
+  float sqrtNum = std::sqrt(float(m_numMassSpringObjects));
+  //calculate the scale of the massSpringObjects
+  m_MSOScale = 1.0f/sqrtNum;
+
+  //generate the mass spring objects
+  for (int i = 0; i < m_numMassSpringObjects; i++)
+  {
+    //initalise the initial mass spring object
+    m_massSpringObjects.push_back(std::shared_ptr<MassSpringObject>(new MassSpringObject(m_gridSize)));
+    m_massSpringObjects.back()->setScale(glm::vec3(m_MSOScale, m_MSOScale, m_MSOScale));
+
+    // pick a random texture
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<> dis(0,7);
+    int textureNum = dis(gen);
+    m_massSpringObjects.back()->setTextureNum(textureNum);
+  }
+
+  if (m_numMassSpringObjects > 1)
+  {
+    //move the mass spring objects
+    unsigned long i = 0;
+    float gapWidth = (m_gridSize-1.0f) * m_MSOScale;
+    float coordTranslation = gapWidth * (sqrtNum * 0.5f) - (gapWidth*0.5f);
+    for (float y = 0; y < sqrtNum; y++)
+    {
+      float currentY = gapWidth * y;
+      for (float x = 0; x < sqrtNum; x++)
+      {
+        float currentX = gapWidth * x;
+        m_massSpringObjects[i]->setPos(glm::vec3(currentX - coordTranslation,currentY - coordTranslation,0.0f));
+        i++;
+      }
+    }
+  }
 
   //set the number of milliseconds the frame timer should run at
   m_timerMilliseconds = 1;
@@ -39,7 +78,10 @@ NGLScene::~NGLScene()
   std::cout<<"Shutting down NGL, removing VAO's and Shaders\n";
   m_vao->removeVAO();
   // remove the texture
-  glDeleteTextures(1,&m_textureName);
+  for (int i = 0; i < 9; i++)
+  {
+    glDeleteTextures(1,&m_textureName[i]);
+  }
 }
 
 // This virtual function is called once before the first call to paintGL() or resizeGL(),
@@ -66,17 +108,16 @@ void NGLScene::initializeGL()
   // load a frag and vert shaders
   initShader(shader, "TextureVertex", "TextureFragment", "TextureShader");
 
-  // pick a random texture
-  std::random_device rd;
-  std::mt19937 gen(rd());
-  std::uniform_int_distribution<> dis(1,8);
-  int textureNum = dis(gen);
-  ngl::Texture texture("textures/texture" + std::to_string(textureNum) + ".png");
-  m_textureName=texture.setTextureGL();
+  // load the flame textures
+  for (int i = 1; i <= 8; i++)
+  {
+    ngl::Texture texture("textures/texture" + std::to_string(i) + ".png");
+    m_textureName[i]=texture.setTextureGL();
+  }
 
   // set the solid texture
-  ngl::Texture solidTexture("textures/ratGrid.png");
-  m_solidTextureName=solidTexture.setTextureGL();
+  ngl::Texture texture("textures/ratGrid.png");
+  m_textureName[8]=texture.setTextureGL();
 
   buildVAO();
   ngl::VAOFactory::listCreators();
@@ -178,21 +219,21 @@ void NGLScene::paintGL()
   ngl::Mat4 MVP= m_project*m_view*m_mouseGlobalTX;
   shader->setUniform("MVP",MVP);
 
-  // bind the active texture before drawing
-  if (m_textured)
-  {
-    glBindTexture(GL_TEXTURE_2D, m_textureName);
-  }
-  else
-  {
-    glBindTexture(GL_TEXTURE_2D, m_solidTextureName);
-  }
-
   //draw objects
 
   //mass spring
   for (unsigned int i = 0; i < m_massSpringObjects.size(); ++i)
   {
+    // bind the active texture before drawing
+    if (m_textured)
+    {
+      glBindTexture(GL_TEXTURE_2D, m_textureName[m_massSpringObjects[i]->getTextureNum()]);
+    }
+    else
+    {
+      glBindTexture(GL_TEXTURE_2D, m_textureName[8]);
+    }
+
     m_vao=ngl::VAOFactory::createVAO(ngl::simpleIndexVAO,GL_TRIANGLES);
     m_vao->bind();
 
