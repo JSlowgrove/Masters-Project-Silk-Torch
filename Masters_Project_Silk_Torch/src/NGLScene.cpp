@@ -395,16 +395,12 @@ void NGLScene::setNumOfObject(int _numOfObjects)
   //generate the MassSpringObjects
   generateMassSpringObjects(_numOfObjects);
 
-  //check if before the run button has been pressed
-  if (initRun)
+  //recreate the vao data
+  for (auto springObjects : m_massSpringObjects)
   {
-    //recreate the vao data
-    for (auto springObjects : m_massSpringObjects)
-    {
-      //update the mass spring point
-      springObjects->update(m_dt);
-      springObjects->reBuildVAOData();
-    }
+    //update the mass spring point
+    springObjects->update(m_dt);
+    springObjects->reBuildVAOData();
   }
   update();
 }
