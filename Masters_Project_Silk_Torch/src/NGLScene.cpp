@@ -25,7 +25,7 @@ NGLScene::NGLScene( QWidget *_parent ) : QOpenGLWidget( _parent ), m_projectRunn
 	m_selectedObject=0;
 
   //generate the MassSpringObjects
-  generateMassSpringObjects(1);
+  generateMassSpringObjects(0);
 
   //set the number of milliseconds the frame timer should run at
   m_timerMilliseconds = 1;
